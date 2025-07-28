@@ -1,0 +1,187 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\radom\\source\\repos\\Time Management System\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{409A89E1-E32B-48E8-A38B-96E7670505BB}|Time Management System\\Time Management System.csproj|c:\\users\\radom\\source\\repos\\time management system\\time management system\\migrations\\20250728111503_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{409A89E1-E32B-48E8-A38B-96E7670505BB}|Time Management System\\Time Management System.csproj|solutionrelative:time management system\\migrations\\20250728111503_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{409A89E1-E32B-48E8-A38B-96E7670505BB}|Time Management System\\Time Management System.csproj|c:\\users\\radom\\source\\repos\\time management system\\time management system\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{409A89E1-E32B-48E8-A38B-96E7670505BB}|Time Management System\\Time Management System.csproj|solutionrelative:time management system\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{409A89E1-E32B-48E8-A38B-96E7670505BB}|Time Management System\\Time Management System.csproj|c:\\users\\radom\\source\\repos\\time management system\\time management system\\models\\taskitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{409A89E1-E32B-48E8-A38B-96E7670505BB}|Time Management System\\Time Management System.csproj|solutionrelative:time management system\\models\\taskitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{409A89E1-E32B-48E8-A38B-96E7670505BB}|Time Management System\\Time Management System.csproj|c:\\users\\radom\\source\\repos\\time management system\\time management system\\data\\appdbcontextfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{409A89E1-E32B-48E8-A38B-96E7670505BB}|Time Management System\\Time Management System.csproj|solutionrelative:time management system\\data\\appdbcontextfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{409A89E1-E32B-48E8-A38B-96E7670505BB}|Time Management System\\Time Management System.csproj|c:\\users\\radom\\source\\repos\\time management system\\time management system\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{409A89E1-E32B-48E8-A38B-96E7670505BB}|Time Management System\\Time Management System.csproj|solutionrelative:time management system\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{409A89E1-E32B-48E8-A38B-96E7670505BB}|Time Management System\\Time Management System.csproj|c:\\users\\radom\\source\\repos\\time management system\\time management system\\models\\project.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{409A89E1-E32B-48E8-A38B-96E7670505BB}|Time Management System\\Time Management System.csproj|solutionrelative:time management system\\models\\project.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{409A89E1-E32B-48E8-A38B-96E7670505BB}|Time Management System\\Time Management System.csproj|c:\\users\\radom\\source\\repos\\time management system\\time management system\\models\\timeentry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{409A89E1-E32B-48E8-A38B-96E7670505BB}|Time Management System\\Time Management System.csproj|solutionrelative:time management system\\models\\timeentry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{409A89E1-E32B-48E8-A38B-96E7670505BB}|Time Management System\\Time Management System.csproj|c:\\users\\radom\\source\\repos\\time management system\\time management system\\models\\tasktag.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{409A89E1-E32B-48E8-A38B-96E7670505BB}|Time Management System\\Time Management System.csproj|solutionrelative:time management system\\models\\tasktag.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{409A89E1-E32B-48E8-A38B-96E7670505BB}|Time Management System\\Time Management System.csproj|c:\\users\\radom\\source\\repos\\time management system\\time management system\\models\\tag.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{409A89E1-E32B-48E8-A38B-96E7670505BB}|Time Management System\\Time Management System.csproj|solutionrelative:time management system\\models\\tag.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{409A89E1-E32B-48E8-A38B-96E7670505BB}|Time Management System\\Time Management System.csproj|c:\\users\\radom\\source\\repos\\time management system\\time management system\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{409A89E1-E32B-48E8-A38B-96E7670505BB}|Time Management System\\Time Management System.csproj|solutionrelative:time management system\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "20250728111503_InitialCreate.cs",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Time Management System\\Time Management System\\Migrations\\20250728111503_InitialCreate.cs",
+              "RelativeDocumentMoniker": "Time Management System\\Migrations\\20250728111503_InitialCreate.cs",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Time Management System\\Time Management System\\Migrations\\20250728111503_InitialCreate.cs*",
+              "RelativeToolTip": "Time Management System\\Migrations\\20250728111503_InitialCreate.cs*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-28T11:15:03.628Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AppDbContextFactory.cs",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Time Management System\\Time Management System\\Data\\AppDbContextFactory.cs",
+              "RelativeDocumentMoniker": "Time Management System\\Data\\AppDbContextFactory.cs",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Time Management System\\Time Management System\\Data\\AppDbContextFactory.cs",
+              "RelativeToolTip": "Time Management System\\Data\\AppDbContextFactory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-28T11:02:39.729Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "TimeEntry.cs",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Time Management System\\Time Management System\\Models\\TimeEntry.cs",
+              "RelativeDocumentMoniker": "Time Management System\\Models\\TimeEntry.cs",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Time Management System\\Time Management System\\Models\\TimeEntry.cs",
+              "RelativeToolTip": "Time Management System\\Models\\TimeEntry.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAA5wBUAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-28T10:12:28.586Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "TaskTag.cs",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Time Management System\\Time Management System\\Models\\TaskTag.cs",
+              "RelativeDocumentMoniker": "Time Management System\\Models\\TaskTag.cs",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Time Management System\\Time Management System\\Models\\TaskTag.cs",
+              "RelativeToolTip": "Time Management System\\Models\\TaskTag.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-28T10:12:20.002Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Project.cs",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Time Management System\\Time Management System\\Models\\Project.cs",
+              "RelativeDocumentMoniker": "Time Management System\\Models\\Project.cs",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Time Management System\\Time Management System\\Models\\Project.cs",
+              "RelativeToolTip": "Time Management System\\Models\\Project.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-28T10:12:12.364Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Tag.cs",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Time Management System\\Time Management System\\Models\\Tag.cs",
+              "RelativeDocumentMoniker": "Time Management System\\Models\\Tag.cs",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Time Management System\\Time Management System\\Models\\Tag.cs",
+              "RelativeToolTip": "Time Management System\\Models\\Tag.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-28T10:12:02.974Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "TaskItem.cs",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Time Management System\\Time Management System\\Models\\TaskItem.cs",
+              "RelativeDocumentMoniker": "Time Management System\\Models\\TaskItem.cs",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Time Management System\\Time Management System\\Models\\TaskItem.cs",
+              "RelativeToolTip": "Time Management System\\Models\\TaskItem.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADcAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-28T10:11:57.612Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Time Management System\\Time Management System\\Models\\User.cs",
+              "RelativeDocumentMoniker": "Time Management System\\Models\\User.cs",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Time Management System\\Time Management System\\Models\\User.cs",
+              "RelativeToolTip": "Time Management System\\Models\\User.cs",
+              "ViewState": "AgIAABcAAAAAAAAAAAAwwCcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-28T10:11:50.61Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Time Management System\\Time Management System\\Program.cs",
+              "RelativeDocumentMoniker": "Time Management System\\Program.cs",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Time Management System\\Time Management System\\Program.cs",
+              "RelativeToolTip": "Time Management System\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-28T09:54:32.932Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Time Management System\\Time Management System\\Data\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "Time Management System\\Data\\AppDbContext.cs",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Time Management System\\Time Management System\\Data\\AppDbContext.cs",
+              "RelativeToolTip": "Time Management System\\Data\\AppDbContext.cs",
+              "ViewState": "AgIAAEMAAAAAAAAAAAAYwF4AAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-28T09:48:01.306Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
