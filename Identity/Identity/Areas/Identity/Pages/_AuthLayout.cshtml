@@ -1,0 +1,63 @@
+﻿@{
+	Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row justify-content-center">
+	<div class="col-5 mt-5">
+		<div class="card login-logout-card">
+			<div class="card-header p-0">
+				<div class="tab-wrap">
+					<ul class="nav nav-tabs card-header-tabs m-0">
+						<li class="nav-item">
+							<a class="nav-link login-tab @(Context.Request.Path.Value.Contains("Login") ? "active" : "")"
+							   href="/Identity/Account/Login">Login</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link register-tab @(Context.Request.Path.Value.Contains("Register") ? "active" : "")"
+							   href="/Identity/Account/Register">Register</a>
+						</li>
+					</ul>
+					<div class="slide"></div>
+				</div>
+			</div>
+			<div class="card-body">
+				<div class="row justify-content-center">
+					<div class="col-10 my-4">
+						@RenderBody()
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	@await RenderSectionAsync("Scripts", required: false)
+	<script>
+		$(function () {
+			$('.slide').css('opacity', '0');
+			const isRegister = window.location.pathname.toLowerCase().includes('register');
+			$('.slide').css({
+				'transition': 'none',
+				'left': isRegister ? '50%' : '0',
+				'opacity': '1'
+			});
+			void $('.slide')[0].offsetHeight;
+			$('.slide').css('transition', 'left 0.3s ease');
+			$('.nav-link').on('click', function(e) {
+				if ($(this).hasClass('active')) return;
+
+				e.preventDefault();
+				const targetUrl = $(this).attr('href');
+
+				$('.slide').css('left', $(this).hasClass('register-tab') ? '50%' : '0');
+
+				setTimeout(() => {
+					$('.nav-link').removeClass('active');
+					$(this).addClass('active');
+					window.location.href = targetUrl;
+				}, 300);
+			});
+		});
+	</script>
+}

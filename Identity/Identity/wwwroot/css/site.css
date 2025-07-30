@@ -1,0 +1,86 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+    font-family: Roboto, sans-serif, Arial, Helvetica;
+}
+
+.tab-wrap {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+    top: 0;
+}
+
+#registerForm .form-floating:not(.row .form-floating) {
+    padding-left: 15px; /* Matches Bootstrap's col-6 spacing */
+}
+
+/* Optional: Adjust floating label alignment */
+#registerForm .form-floating > label {
+    left: 15px; /* Keeps labels aligned with padded inputs */
+}
+
+.login-logout-card .nav-tabs {
+    display: flex;
+    width: 100%;
+    border-bottom: none;
+    background: #f8f9fa;
+    padding: 0;
+}
+
+.login-logout-card .nav-item {
+    width: 50%;
+    text-align: center;
+}
+
+.login-logout-card .nav-link {
+    color: #495057 !important;
+    padding: 1rem;
+    border: none !important;
+    background-color: transparent !important;
+    transition: color 0.2s ease;
+}
+
+.login-logout-card .nav-link.active {
+        color: #000 !important;
+        font-weight: bold;
+        background: white !important;
+}
+
+.slide {
+    background: #258cfb;
+    width: 50%;
+    height: 3px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    transition: left 0.3s ease;
+    will-change: left;
+}
+
+.login-logout-card .nav-link.login-tab.active ~ .slide {
+    left: 0;
+}
+
+.login-logout-card .nav-link.register-tab.active ~ .slide {
+    left: 50%;
+}
