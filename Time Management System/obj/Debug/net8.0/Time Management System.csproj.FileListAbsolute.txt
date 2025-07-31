@@ -113,3 +113,4 @@ C:\Users\radom\source\repos\Time Management System\Time Management System\obj\De
 C:\Users\radom\source\repos\Time Management System\Time Management System\obj\Debug\net8.0\Time Management System.pdb
 C:\Users\radom\source\repos\Time Management System\Time Management System\obj\Debug\net8.0\Time Management System.genruntimeconfig.cache
 C:\Users\radom\source\repos\Time Management System\Time Management System\obj\Debug\net8.0\ref\Time Management System.dll
+C:\Users\radom\source\repos\Time Management System\Time Management System\obj\Debug\net8.0\Time Management System.sourcelink.json

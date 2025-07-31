@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Time_Management_System.Models;
 
 namespace Time_Management_System.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
     {
         public AppDbContext()
         {
@@ -16,7 +18,7 @@ namespace Time_Management_System.Data
         }
 
 
-        public DbSet<User> Users { get; set; }
+        // public DbSet<ApplicationUser> Users { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<TaskItem> Tasks { get; set; }
         public DbSet<Tag> Tags { get; set; }
@@ -34,6 +36,8 @@ namespace Time_Management_System.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<TaskTag>()
                 .HasKey(tt => new { tt.TaskId, tt.TagId });
             // Project -> User (CreatedBy)

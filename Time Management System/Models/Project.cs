@@ -18,7 +18,7 @@ namespace Time_Management_System.Models
         [Required]
         public int CreatedById { get; set; }
 
-        public User CreatedBy { get; set; }
+        public ApplicationUser CreatedBy { get; set; }
 
         [Required]
         public DateTime CreatedDate { get; set; } = DateTime.Now;

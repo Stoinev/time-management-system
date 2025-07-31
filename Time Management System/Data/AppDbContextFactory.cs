@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿/*using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
 namespace Time_Management_System.Data
@@ -15,4 +15,4 @@ namespace Time_Management_System.Data
             return new AppDbContext(optionsBuilder.Options);
         }
     }
-}
+}*/

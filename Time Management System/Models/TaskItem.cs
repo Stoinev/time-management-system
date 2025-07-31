@@ -38,12 +38,12 @@ namespace Time_Management_System.Models
 
         public int? AssignedUserId { get; set; }
 
-        public User AssignedUser { get; set; }
+        public ApplicationUser AssignedUser { get; set; }
 
         [Required]
         public int CreatedById { get; set; }
 
-        public User CreatedBy { get; set; }
+        public ApplicationUser CreatedBy { get; set; }
 
         public decimal? EstimatedHours { get; set; }
 

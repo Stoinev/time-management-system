@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace Time_Management_System.Models
@@ -10,19 +11,19 @@ namespace Time_Management_System.Models
         User
     }
 
-    public class User
+    public class ApplicationUser : IdentityUser<int>
     {
-        [Key]
-        public int Id { get; set; }
+        //[Key]
+        //public int Id { get; set; }
 
-        [Required]
-        [MaxLength(50)]
-        public string Username { get; set; }
+      //  [Required]
+      //  [MaxLength(50)]
+      //  public string Username { get; set; }
 
-        [Required]
-        [MaxLength(100)]
-        [EmailAddress]
-        public string Email { get; set; }
+     //   [Required]
+      //  [MaxLength(100)]
+     //   [EmailAddress]
+     //   public string Email { get; set; }
 
         [Required]
         [MaxLength(50)]
@@ -32,8 +33,8 @@ namespace Time_Management_System.Models
         [MaxLength(50)]
         public string LastName { get; set; }
 
-        [Required]
-        public string PasswordHash { get; set; }
+       // [Required]
+       // public string PasswordHash { get; set; }
 
         [Required]
         public UserRole Role { get; set; } = UserRole.User;
