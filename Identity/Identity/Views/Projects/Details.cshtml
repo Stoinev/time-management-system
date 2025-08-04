@@ -1,0 +1,28 @@
+﻿@model Identity.Models.Project
+
+@{
+    ViewData["Title"] = "Project Details";
+}
+
+<h2>Project Details</h2>
+
+<div class="mb-3">
+    <strong>ID:</strong> @Model.Id
+</div>
+<div class="mb-3">
+    <strong>Name:</strong> @Model.Name
+</div>
+<div class="mb-3">
+    <strong>Description:</strong> @Model.Description
+</div>
+<div class="mb-3">
+    <strong>Created By:</strong> @Model.CreatedBy?.UserName
+</div>
+<div class="mb-3">
+    <strong>Created Date:</strong> @Model.CreatedDate.ToString("yyyy-MM-dd")
+</div>
+<div class="mb-3">
+    <strong>Status:</strong> @(Model.IsActive ? "Active" : "Inactive")
+</div>
+
+<a asp-action="Manage" class="btn btn-secondary">Back to Manage</a>

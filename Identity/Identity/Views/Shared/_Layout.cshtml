@@ -28,6 +28,33 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Tasks" asp-action="Index">Tasks</a>
+                    </li>
+
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-dark" href="#" id="projectsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Projects
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="projectsDropdown">
+                            @if (ViewBag.UserProjects != null && ViewBag.UserProjects.Count > 0)
+                            {
+                                foreach (var project in ViewBag.UserProjects)
+                                {
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id">
+                                            @project.Name
+                                        </a>
+                                    </li>
+                                }
+                                <li><hr class="dropdown-divider" /></li>
+                            }
+                            <li>
+                                <a class="dropdown-item" asp-controller="Projects" asp-action="Manage">Manage Projects</a>
+                            </li>
+                        </ul>
+                    </li>
                     @if (User.IsInRole("Admin"))
                     {
                         <li class="nav-item dropdown">

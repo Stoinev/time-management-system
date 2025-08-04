@@ -1,5 +1,6 @@
 ﻿using Identity.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
+using Identity.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,11 +13,20 @@ public class IdentityDbContext : IdentityDbContext<ApplicationUser>
     {
     }
 
+    public DbSet<Project> Projects { get; set; }
+    public DbSet<TaskItem> Tasks { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        // Customize the ASP.NET Identity model and override the defaults if needed.
-        // For example, you can rename the ASP.NET Identity table names and more.
-        // Add your customizations after calling base.OnModelCreating(builder);
+
+        builder.Entity<TaskItem>(entity =>
+        {
+            entity.Property(t => t.Priority)
+                  .HasConversion<string>();
+
+            entity.Property(t => t.Status)
+                  .HasConversion<string>();
+        });
     }
 }

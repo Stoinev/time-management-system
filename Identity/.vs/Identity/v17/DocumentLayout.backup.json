@@ -3,20 +3,84 @@
   "WorkspaceRootPath": "C:\\Users\\radom\\source\\repos\\Identity\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\views\\tasks\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\views\\tasks\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\views\\admin\\listusers.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\views\\admin\\listusers.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\controllers\\taskscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\controllers\\taskscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\controllers\\projectscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\controllers\\projectscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\views\\tasks\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\views\\tasks\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\views\\tasks\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\views\\tasks\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\views\\tasks\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\views\\tasks\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\models\\taskitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\models\\taskitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\views\\tasks\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\views\\tasks\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\views\\projects\\manage.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\views\\projects\\manage.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\areas\\identity\\data\\identitydbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\areas\\identity\\data\\identitydbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\models\\project.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\models\\project.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\views\\projects\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\views\\projects\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\views\\projects\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\views\\projects\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\views\\projects\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\views\\projects\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\views\\projects\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\views\\projects\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\areas\\identity\\pages\\_authlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\areas\\identity\\pages\\_authlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\views\\shared\\_loginpartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -27,8 +91,12 @@
       "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\areas\\identity\\pages\\_authlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\areas\\identity\\pages\\_authlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\views\\admin\\listusers.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\views\\admin\\listusers.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|c:\\users\\radom\\source\\repos\\identity\\identity\\migrations\\20250803160419_addprojectstable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{522C30A4-1A16-4606-9A3F-1A42CC636AAB}|Identity\\Identity.csproj|solutionrelative:identity\\migrations\\20250803160419_addprojectstable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -38,93 +106,262 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 0,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Tasks\\Details.cshtml",
+              "RelativeDocumentMoniker": "Identity\\Views\\Tasks\\Details.cshtml",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Tasks\\Details.cshtml",
+              "RelativeToolTip": "Identity\\Views\\Tasks\\Details.cshtml",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAkwCAAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-08-04T17:35:34.457Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Delete.cshtml",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Tasks\\Delete.cshtml",
+              "RelativeDocumentMoniker": "Identity\\Views\\Tasks\\Delete.cshtml",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Tasks\\Delete.cshtml",
+              "RelativeToolTip": "Identity\\Views\\Tasks\\Delete.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-08-04T17:32:10.703Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Tasks\\Edit.cshtml",
+              "RelativeDocumentMoniker": "Identity\\Views\\Tasks\\Edit.cshtml",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Tasks\\Edit.cshtml",
+              "RelativeToolTip": "Identity\\Views\\Tasks\\Edit.cshtml",
+              "ViewState": "AgIAABoAAAAAAAAAAAAkwCoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-08-04T17:29:24.708Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Tasks\\Create.cshtml",
+              "RelativeDocumentMoniker": "Identity\\Views\\Tasks\\Create.cshtml",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Tasks\\Create.cshtml",
+              "RelativeToolTip": "Identity\\Views\\Tasks\\Create.cshtml",
+              "ViewState": "AgIAABkAAAAAAAAAAAAkwD8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-08-04T16:11:34.437Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Tasks\\Index.cshtml",
+              "RelativeDocumentMoniker": "Identity\\Views\\Tasks\\Index.cshtml",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Tasks\\Index.cshtml",
+              "RelativeToolTip": "Identity\\Views\\Tasks\\Index.cshtml",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAkwDkAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-08-04T16:01:28.454Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "TasksController.cs",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Controllers\\TasksController.cs",
+              "RelativeDocumentMoniker": "Identity\\Controllers\\TasksController.cs",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Controllers\\TasksController.cs",
+              "RelativeToolTip": "Identity\\Controllers\\TasksController.cs",
+              "ViewState": "AgIAABgBAAAAAAAAAAAowDIBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-04T15:47:28.489Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "TaskItem.cs",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Models\\TaskItem.cs",
+              "RelativeDocumentMoniker": "Identity\\Models\\TaskItem.cs",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Models\\TaskItem.cs",
+              "RelativeToolTip": "Identity\\Models\\TaskItem.cs",
+              "ViewState": "AgIAABkAAAAAAAAAAAAmwCcAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-04T15:29:01.613Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ListUsers.cshtml",
-              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Admin\\ListUsers.cshtml",
-              "RelativeDocumentMoniker": "Identity\\Views\\Admin\\ListUsers.cshtml",
-              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Admin\\ListUsers.cshtml",
-              "RelativeToolTip": "Identity\\Views\\Admin\\ListUsers.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-07-31T17:30:59.737Z",
+              "DocumentIndex": 2,
+              "Title": "ProjectsController.cs",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Controllers\\ProjectsController.cs",
+              "RelativeDocumentMoniker": "Identity\\Controllers\\ProjectsController.cs",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Controllers\\ProjectsController.cs",
+              "RelativeToolTip": "Identity\\Controllers\\ProjectsController.cs",
+              "ViewState": "AgIAAMsAAAAAAAAAAAAAwNwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-03T17:07:00.713Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 7,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "Identity\\Views\\Home\\Index.cshtml",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "Identity\\Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-08-03T16:22:27.012Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "AdminController.cs",
               "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Controllers\\AdminController.cs",
               "RelativeDocumentMoniker": "Identity\\Controllers\\AdminController.cs",
               "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Controllers\\AdminController.cs",
               "RelativeToolTip": "Identity\\Controllers\\AdminController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAfAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAYAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-07-31T17:25:30.19Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 12,
+              "Title": "IdentityDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Areas\\Identity\\Data\\IdentityDbContext.cs",
+              "RelativeDocumentMoniker": "Identity\\Areas\\Identity\\Data\\IdentityDbContext.cs",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Areas\\Identity\\Data\\IdentityDbContext.cs",
+              "RelativeToolTip": "Identity\\Areas\\Identity\\Data\\IdentityDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-03T15:59:33.264Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Project.cs",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Models\\Project.cs",
+              "RelativeDocumentMoniker": "Identity\\Models\\Project.cs",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Models\\Project.cs",
+              "RelativeToolTip": "Identity\\Models\\Project.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-03T15:57:41.971Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Delete.cshtml",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Projects\\Delete.cshtml",
+              "RelativeDocumentMoniker": "Identity\\Views\\Projects\\Delete.cshtml",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Projects\\Delete.cshtml",
+              "RelativeToolTip": "Identity\\Views\\Projects\\Delete.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-08-04T13:39:37.613Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Projects\\Edit.cshtml",
+              "RelativeDocumentMoniker": "Identity\\Views\\Projects\\Edit.cshtml",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Projects\\Edit.cshtml",
+              "RelativeToolTip": "Identity\\Views\\Projects\\Edit.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-08-04T13:18:31.531Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
               "Title": "_Layout.cshtml",
               "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "Identity\\Views\\Shared\\_Layout.cshtml",
               "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Shared\\_Layout.cshtml",
               "RelativeToolTip": "Identity\\Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAAACcAAAAiAAAAAAAAAA==",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAiwB0AAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-07-30T18:00:10.245Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "HomeController.cs",
-              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Controllers\\HomeController.cs",
-              "RelativeDocumentMoniker": "Identity\\Controllers\\HomeController.cs",
-              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Controllers\\HomeController.cs",
-              "RelativeToolTip": "Identity\\Controllers\\HomeController.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAqwBkAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-30T17:21:35.767Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "_LoginPartial.cshtml",
-              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Shared\\_LoginPartial.cshtml",
-              "RelativeDocumentMoniker": "Identity\\Views\\Shared\\_LoginPartial.cshtml",
-              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Shared\\_LoginPartial.cshtml",
-              "RelativeToolTip": "Identity\\Views\\Shared\\_LoginPartial.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 10,
+              "Title": "Manage.cshtml",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Projects\\Manage.cshtml",
+              "RelativeDocumentMoniker": "Identity\\Views\\Projects\\Manage.cshtml",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Projects\\Manage.cshtml",
+              "RelativeToolTip": "Identity\\Views\\Projects\\Manage.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADYAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-07-30T17:12:12.683Z",
+              "WhenOpened": "2025-08-03T17:08:45.508Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 17,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Projects\\Create.cshtml",
+              "RelativeDocumentMoniker": "Identity\\Views\\Projects\\Create.cshtml",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Projects\\Create.cshtml",
+              "RelativeToolTip": "Identity\\Views\\Projects\\Create.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-08-03T17:16:47.263Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Projects\\Details.cshtml",
+              "RelativeDocumentMoniker": "Identity\\Views\\Projects\\Details.cshtml",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Projects\\Details.cshtml",
+              "RelativeToolTip": "Identity\\Views\\Projects\\Details.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-08-03T17:16:56.495Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Program.cs",
               "RelativeDocumentMoniker": "Identity\\Program.cs",
               "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Program.cs",
               "RelativeToolTip": "Identity\\Program.cs",
-              "ViewState": "AgIAAEAAAAAAAAAAAAAgwFsAAAAWAAAAAAAAAA==",
+              "ViewState": "AgIAAEMAAAAAAAAAAAAgwE8AAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-07-30T10:41:37.034Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 19,
               "Title": "_AuthLayout.cshtml",
               "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Areas\\Identity\\Pages\\_AuthLayout.cshtml",
               "RelativeDocumentMoniker": "Identity\\Areas\\Identity\\Pages\\_AuthLayout.cshtml",
@@ -133,6 +370,58 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACsAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-07-30T10:47:37.289Z"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "_LoginPartial.cshtml",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Shared\\_LoginPartial.cshtml",
+              "RelativeDocumentMoniker": "Identity\\Views\\Shared\\_LoginPartial.cshtml",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Shared\\_LoginPartial.cshtml",
+              "RelativeToolTip": "Identity\\Views\\Shared\\_LoginPartial.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-30T17:12:12.683Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "Identity\\Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "Identity\\Controllers\\HomeController.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAAAowBYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-30T17:21:35.767Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "ListUsers.cshtml",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Admin\\ListUsers.cshtml",
+              "RelativeDocumentMoniker": "Identity\\Views\\Admin\\ListUsers.cshtml",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Views\\Admin\\ListUsers.cshtml",
+              "RelativeToolTip": "Identity\\Views\\Admin\\ListUsers.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-31T17:30:59.737Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "20250803160419_AddProjectsTable.cs",
+              "DocumentMoniker": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Migrations\\20250803160419_AddProjectsTable.cs",
+              "RelativeDocumentMoniker": "Identity\\Migrations\\20250803160419_AddProjectsTable.cs",
+              "ToolTip": "C:\\Users\\radom\\source\\repos\\Identity\\Identity\\Migrations\\20250803160419_AddProjectsTable.cs",
+              "RelativeToolTip": "Identity\\Migrations\\20250803160419_AddProjectsTable.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAABEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-03T16:04:20.035Z"
             }
           ]
         }

@@ -214,12 +214,6 @@ C:\Users\radom\source\repos\Identity\Identity\obj\Debug\net8.0\scopedcss\project
 C:\Users\radom\source\repos\Identity\Identity\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\radom\source\repos\Identity\Identity\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\radom\source\repos\Identity\Identity\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\radom\source\repos\Identity\Identity\obj\Debug\net8.0\staticwebassets\msbuild.Identity.Microsoft.AspNetCore.StaticWebAssets.props
-C:\Users\radom\source\repos\Identity\Identity\obj\Debug\net8.0\staticwebassets\msbuild.Identity.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
-C:\Users\radom\source\repos\Identity\Identity\obj\Debug\net8.0\staticwebassets\msbuild.build.Identity.props
-C:\Users\radom\source\repos\Identity\Identity\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.Identity.props
-C:\Users\radom\source\repos\Identity\Identity\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.Identity.props
-C:\Users\radom\source\repos\Identity\Identity\obj\Debug\net8.0\staticwebassets.pack.json
 C:\Users\radom\source\repos\Identity\Identity\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\radom\source\repos\Identity\Identity\obj\Debug\net8.0\Identity.csproj.Up2Date
 C:\Users\radom\source\repos\Identity\Identity\obj\Debug\net8.0\Identity.dll
@@ -265,3 +259,8 @@ C:\Users\radom\source\repos\Identity\Identity\bin\Debug\net8.0\runtimes\win\lib\
 C:\Users\radom\source\repos\Identity\Identity\obj\Debug\net8.0\Identity.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\radom\source\repos\Identity\Identity\bin\Debug\net8.0\MySqlConnector.dll
 C:\Users\radom\source\repos\Identity\Identity\bin\Debug\net8.0\Pomelo.EntityFrameworkCore.MySql.dll
+C:\Users\radom\source\repos\Identity\Identity\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\radom\source\repos\Identity\Identity\obj\Debug\net8.0\rjimswa.dswa.cache.json
+C:\Users\radom\source\repos\Identity\Identity\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+C:\Users\radom\source\repos\Identity\Identity\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+C:\Users\radom\source\repos\Identity\Identity\obj\Debug\net8.0\staticwebassets.build.json.cache

@@ -1,0 +1,50 @@
+﻿@model Identity.Models.TaskItem
+
+@{
+    ViewData["Title"] = "Task Details";
+}
+
+<h2>Task Details</h2>
+
+<div class="mb-3">
+    <strong>Title:</strong> @Model.Title
+</div>
+
+<div class="mb-3">
+    <strong>Description:</strong> @Model.Description
+</div>
+
+<div class="mb-3">
+    <strong>Project:</strong> @Model.Project?.Name
+</div>
+
+<div class="mb-3">
+    <strong>Assigned To:</strong> @Model.AssignedUser?.UserName ?? "Unassigned"
+</div>
+
+<div class="mb-3">
+    <strong>Created By:</strong> @Model.CreatedBy?.UserName
+</div>
+
+<div class="mb-3">
+    <strong>Priority:</strong> @Model.Priority.ToString()
+</div>
+
+<div class="mb-3">
+    <strong>Status:</strong> @Model.Status.ToString()
+</div>
+
+<div class="mb-3">
+    <strong>Estimated Hours:</strong> @(Model.EstimatedHours.HasValue? Model.EstimatedHours.Value.ToString("F2") : "N/A")
+</div>
+
+<div class="mb-3">
+    <strong>Created Date:</strong> @Model.CreatedDate.ToString("yyyy-MM-dd HH:mm")
+</div>
+
+<div class="mb-3">
+    <strong>Updated Date:</strong> @Model.UpdatedDate.ToString("yyyy-MM-dd HH:mm")
+</div>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>

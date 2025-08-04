@@ -1,0 +1,60 @@
+﻿@model List<Identity.Models.TaskItem>
+
+@{
+    ViewData["Title"] = "Manage Tasks";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold">Manage Tasks</h2>
+        <div class="d-flex gap-2">
+            <a class="btn btn-primary" asp-action="Create">Create Task</a>
+            <button class="btn btn-secondary">Customize</button>
+        </div>
+    </div>
+
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Search tasks..." aria-label="Search">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Filter</button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">To Do</a></li>
+            <li><a class="dropdown-item" href="#">In Progress</a></li>
+            <li><a class="dropdown-item" href="#">Testing</a></li>
+            <li><a class="dropdown-item" href="#">Done</a></li>
+        </ul>
+    </div>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Project</th>
+                <th>Assigned To</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Created Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in Model)
+            {
+                <tr>
+                    <td>@task.Id</td>
+                    <td>@task.Title</td>
+                    <td>@task.Project?.Name</td>
+                    <td>@(task.AssignedUser?.Email ?? "Unassigned")</td>
+                    <td>@task.Priority.ToString()</td>
+                    <td>@task.Status.ToString()</td>
+                    <td>@task.CreatedDate.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@task.Id" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@task.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+						<a asp-action="Details" asp-route-id="@task.Id" class="btn btn-sm btn-outline-info">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
