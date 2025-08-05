@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Build.Evaluation;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using TaskStatus = Identity.Models.TaskStatus;
 
@@ -25,7 +27,6 @@ namespace Identity.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = _userManager.GetUserId(User);
-
             // Load tasks created by this user (or adjust logic as needed)
             var tasks = await _context.Tasks
                 .Include(t => t.Project)
@@ -35,8 +36,17 @@ namespace Identity.Controllers
                 .OrderByDescending(t => t.CreatedDate)
                 .ToListAsync();
 
+            var projects = await _context.Projects
+                .Where(p => p.CreatedById == userId)
+                .ToListAsync();
+
+            ViewData["Projects"] = projects;
+
             return View(tasks);
         }
+
+       
+
 
         // GET: Tasks/Create
         public async Task<IActionResult> Create()

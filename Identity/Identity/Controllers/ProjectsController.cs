@@ -21,17 +21,19 @@ public class ProjectsController : Controller
     }
 
     // GET: /Projects/Manage
-    public async Task<IActionResult> Manage()
-    {
-        var userId = _userManager.GetUserId(User);
-        var projects = await _context.Projects
-            .Where(p => p.CreatedById == userId)
-            .Include(p => p.CreatedBy)
-            .OrderByDescending(p => p.CreatedDate)
-            .ToListAsync();
+     public async Task<IActionResult> Manage()
+     {
+         var userId = _userManager.GetUserId(User);
 
-        return View(projects);
-    }
+         var projects = await _context.Projects
+             .Where(p => p.CreatedById == userId)
+             .Include(p => p.CreatedBy)
+             .OrderByDescending(p => p.CreatedDate)
+             .ToListAsync();
+
+         return View(projects);
+     }
+
 
     // GET: /Projects/Create
     public IActionResult Create()
