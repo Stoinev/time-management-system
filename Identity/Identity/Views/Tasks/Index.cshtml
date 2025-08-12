@@ -1,5 +1,24 @@
 ﻿@using Identity.Models
 @model List<TaskItem>
+@functions {
+    // Simple method to return black or white based on brightness of background color (hex string)
+    public string GetTextColor(string bgColor)
+    {
+        if (string.IsNullOrEmpty(bgColor) || !bgColor.StartsWith("#") || bgColor.Length != 7)
+            return "black";
+
+        // Convert hex to RGB
+        int r = int.Parse(bgColor.Substring(1, 2), System.Globalization.NumberStyles.HexNumber);
+        int g = int.Parse(bgColor.Substring(3, 2), System.Globalization.NumberStyles.HexNumber);
+        int b = int.Parse(bgColor.Substring(5, 2), System.Globalization.NumberStyles.HexNumber);
+
+        // Calculate brightness (standard formula)
+        double brightness = (r * 0.299) + (g * 0.587) + (b * 0.114);
+
+        // Return black for bright colors, white for dark colors
+        return brightness > 186 ? "black" : "white";
+    }
+}
 
 @{
     ViewData["Title"] = "Manage Tasks";
@@ -396,12 +415,14 @@
                         <th>Priority</th>
                         <th>Status</th>
                         <th>Created Date</th>
+                        <th>Tags</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="tasksTableBody">
                     @foreach (var task in Model)
                     {
+
                         <tr data-project="@task.Project?.Name"
                             data-priority="@task.Priority"
                             data-status="@task.Status">
@@ -419,13 +440,25 @@
                                     <span class="badge @(task.Status == Identity.Models.TaskStatus.ToDo ? "bg-secondary" : task.Status == Identity.Models.TaskStatus.InProgress ? "bg-primary" : task.Status == Identity.Models.TaskStatus.Testing ? "bg-warning" : "bg-success")">
                                 @task.Status
                             </span>
-                        </td>
+                        </td>                       
                         <td>@task.CreatedDate.ToString("yyyy-MM-dd")</td>
+                            <td>
+                                @if (task.TaskTags != null && task.TaskTags.Any())
+                                {
+                                    @foreach (var taskTag in task.TaskTags)
+                                    {
+                                        <span class="badge" style="background-color: @taskTag.Tag.ColorCode; color: @GetTextColor(taskTag.Tag.ColorCode)">
+                                            @taskTag.Tag.Name
+                                        </span>
+                                    }
+                                }
+                            </td>
                         <td>
                             <a asp-action="Edit" asp-route-id="@task.Id" class="btn btn-sm btn-outline-primary btn-action me-1">Edit</a>
                             <a asp-action="Delete" asp-route-id="@task.Id" class="btn btn-sm btn-outline-danger btn-action me-1">Delete</a>
                             <a asp-action="Details" asp-route-id="@task.Id" class="btn btn-sm btn-outline-info btn-action">Details</a>
                         </td>
+
                     </tr>
                     }
                 </tbody>

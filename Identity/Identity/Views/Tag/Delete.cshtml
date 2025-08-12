@@ -1,0 +1,56 @@
+﻿@model Identity.Models.Tag
+
+@{
+    ViewData["Title"] = "Delete Tag";
+}
+
+<h1>Delete Tag</h1>
+
+<div class="alert alert-warning" role="alert">
+    <h4 class="alert-heading">Are you sure you want to delete this tag?</h4>
+    @if (ViewBag.TaskCount > 0)
+    {
+        <p class="mb-0">
+            <strong>Warning:</strong> This tag is currently used by <strong>@ViewBag.TaskCount task(s)</strong>.
+            Deleting it will remove the tag from all associated tasks.
+        </p>
+    }
+</div>
+
+<div>
+    <h4>Tag Details</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Name</dt>
+        <dd class="col-sm-10">
+            <span class="badge" style="background-color: @Model.ColorCode; color: @GetTextColor(Model.ColorCode)">
+                @Model.Name
+            </span>
+        </dd>
+
+        <dt class="col-sm-2">Color</dt>
+        <dd class="col-sm-10">
+            <div style="width: 30px; height: 30px; background-color: @Model.ColorCode; border: 1px solid #ccc; border-radius: 4px;"></div>
+        </dd>
+
+        <dt class="col-sm-2">Created Date</dt>
+        <dd class="col-sm-10">
+            @Model.CreatedDate.ToString("MM/dd/yyyy")
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+@functions {
+    string GetTextColor(string backgroundColor)
+    {
+        var color = System.Drawing.ColorTranslator.FromHtml(backgroundColor);
+        var brightness = (color.R * 299 + color.G * 587 + color.B * 114) / 1000;
+        return brightness > 128 ? "#000000" : "#FFFFFF";
+    }
+}

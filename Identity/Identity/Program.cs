@@ -1,7 +1,8 @@
+using Identity.Areas.Identity.Data;
+using Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Identity.Data;
-using Identity.Areas.Identity.Data;
+using TimeManagementSystem.Services;
 namespace Identity
 {
     public class Program
@@ -20,6 +21,7 @@ namespace Identity
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
+            builder.Services.AddScoped<TagService>();
 
             // Uncomment the following lines to configure Identity options as needed.
             builder.Services.Configure<IdentityOptions>(options =>

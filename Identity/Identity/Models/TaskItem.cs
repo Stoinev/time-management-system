@@ -60,4 +60,6 @@ public class TaskItem
 
     public DateTime CreatedDate { get; set; }
     public DateTime UpdatedDate { get; set; }
+
+    public ICollection<TaskTag> TaskTags { get; set; } = new List<TaskTag>();
 }

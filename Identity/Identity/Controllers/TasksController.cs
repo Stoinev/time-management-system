@@ -1,6 +1,7 @@
 ﻿using Identity.Areas.Identity.Data;
 using Identity.Data;
 using Identity.Models;
+using Identity.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Build.Evaluation;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using TaskStatus = Identity.Models.TaskStatus;
 
 namespace Identity.Controllers
@@ -24,15 +26,26 @@ namespace Identity.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(List<int>? tagIds = null)
         {
             var userId = _userManager.GetUserId(User);
-            // Load tasks created by this user (or adjust logic as needed)
-            var tasks = await _context.Tasks
+            var query = _context.Tasks
                 .Include(t => t.Project)
                 .Include(t => t.AssignedUser)
                 .Include(t => t.CreatedBy)
-                .Where(t => t.CreatedById == userId)
+                .Include(t => t.TaskTags)
+                .ThenInclude(tt => tt.Tag)
+                .Where(t => t.CreatedById == userId);
+
+            if (tagIds != null && tagIds.Any())
+            {
+                foreach (var tagId in tagIds)
+                {
+                    query = query.Where(t => t.TaskTags.Any(tt => tt.TagId == tagId));
+                }
+            }
+
+            var tasks = await query
                 .OrderByDescending(t => t.CreatedDate)
                 .ToListAsync();
 
@@ -40,18 +53,19 @@ namespace Identity.Controllers
                 .Where(p => p.CreatedById == userId)
                 .ToListAsync();
 
+            ViewBag.AvailableTags = await _context.Tags.OrderBy(t => t.Name).ToListAsync();
+            ViewBag.SelectedTagIds = tagIds ?? new List<int>();
             ViewData["Projects"] = projects;
 
             return View(tasks);
         }
 
-       
+
 
 
         // GET: Tasks/Create
         public async Task<IActionResult> Create()
         {
-            // Load projects for dropdown - only projects created by current user
             var userId = _userManager.GetUserId(User);
             var projects = await _context.Projects
                 .Where(p => p.CreatedById == userId)
@@ -60,11 +74,9 @@ namespace Identity.Controllers
 
             ViewData["ProjectId"] = new SelectList(projects, "Id", "Name");
 
-            // Load users for AssignedUser dropdown (optional)
             var users = await _userManager.Users.ToListAsync();
             ViewData["AssignedUserId"] = new SelectList(users, "Id", "UserName");
 
-            // Load enums for Priority and Status dropdowns
             ViewData["Priorities"] = Enum.GetValues(typeof(TaskPriority))
                 .Cast<TaskPriority>()
                 .Select(p => new SelectListItem(p.ToString(), p.ToString()))
@@ -75,56 +87,77 @@ namespace Identity.Controllers
                 .Select(s => new SelectListItem(s.ToString(), s.ToString()))
                 .ToList();
 
+
+            ViewData["AvailableTags"] = new MultiSelectList(
+                await _context.Tags.OrderBy(t => t.Name).ToListAsync(),
+                "Id",
+                "Name"
+            );
+
             return View();
         }
 
         // POST: Tasks/Create
-         [HttpPost]
-         [ValidateAntiForgeryToken]
-         public async Task<IActionResult> Create(TaskItem task)
-         {
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(TaskItem task, List<int>? SelectedTagIds)
+        {
             ModelState.Remove("CreatedById");
             ModelState.Remove("CreatedBy");
             ModelState.Remove("Project");
             ModelState.Remove("AssignedUser");
+            ModelState.Remove("SelectedTagIds");
 
-             if (!ModelState.IsValid)
-             {
-                 // Re-populate dropdowns if validation fails
-                 var userId = _userManager.GetUserId(User);
-                 var projects = await _context.Projects
-                     .Where(p => p.CreatedById == userId)
-                     .OrderBy(p => p.Name)
-                     .ToListAsync();
-                 ViewData["ProjectId"] = new SelectList(projects, "Id", "Name", task.ProjectId);
+            if (!ModelState.IsValid)
+            {
+                var userId = _userManager.GetUserId(User);
+                var projects = await _context.Projects
+                    .Where(p => p.CreatedById == userId)
+                    .OrderBy(p => p.Name)
+                    .ToListAsync();
+                ViewData["ProjectId"] = new SelectList(projects, "Id", "Name", task.ProjectId);
 
-                 var users = await _userManager.Users.ToListAsync();
-                 ViewData["AssignedUserId"] = new SelectList(users, "Id", "UserName", task.AssignedUserId);
+                var users = await _userManager.Users.ToListAsync();
+                ViewData["AssignedUserId"] = new SelectList(users, "Id", "UserName", task.AssignedUserId);
 
-                 ViewData["Priorities"] = Enum.GetValues(typeof(TaskPriority))
-                     .Cast<TaskPriority>()
-                     .Select(p => new SelectListItem(p.ToString(), p.ToString(), p == task.Priority))
-                     .ToList();
+                ViewData["Priorities"] = Enum.GetValues(typeof(TaskPriority))
+                    .Cast<TaskPriority>()
+                    .Select(p => new SelectListItem(p.ToString(), p.ToString(), p == task.Priority))
+                    .ToList();
 
-                 ViewData["Statuses"] = Enum.GetValues(typeof(TaskStatus))
-                     .Cast<TaskStatus>()
-                     .Select(s => new SelectListItem(s.ToString(), s.ToString(), s == task.Status))
-                     .ToList();
+                ViewData["Statuses"] = Enum.GetValues(typeof(TaskStatus))
+                    .Cast<TaskStatus>()
+                    .Select(s => new SelectListItem(s.ToString(), s.ToString(), s == task.Status))
+                    .ToList();
 
-                 return View(task);
-             }
+                ViewData["AvailableTags"] = new MultiSelectList(
+                    await _context.Tags.OrderBy(t => t.Name).ToListAsync(),
+                    "Id",
+                    "Name",
+                    SelectedTagIds
+                );
 
-             // Set metadata fields
-             task.CreatedById = _userManager.GetUserId(User);
-             task.CreatedDate = DateTime.UtcNow;
-             task.UpdatedDate = DateTime.UtcNow;
+                return View(task);
+            }
 
-             _context.Tasks.Add(task);
-             await _context.SaveChangesAsync();
+            task.CreatedById = _userManager.GetUserId(User);
+            task.CreatedDate = DateTime.UtcNow;
+            task.UpdatedDate = DateTime.UtcNow;
 
-             return RedirectToAction(nameof(Index));
-         }
+            _context.Tasks.Add(task);
+            await _context.SaveChangesAsync();
+
+            if (SelectedTagIds != null && SelectedTagIds.Any())
+            {
+                foreach (var tagId in SelectedTagIds)
+                {
+                    _context.TaskTags.Add(new TaskTag { TaskId = task.Id, TagId = tagId });
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
 
         // GET: Tasks/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -135,12 +168,12 @@ namespace Identity.Controllers
             var task = await _context.Tasks
                 .Include(t => t.Project)
                 .Include(t => t.AssignedUser)
+                .Include(t => t.TaskTags)
                 .FirstOrDefaultAsync(t => t.Id == id);
 
             if (task == null)
                 return NotFound();
 
-            // Populate dropdowns
             var userId = _userManager.GetUserId(User);
             var projects = await _context.Projects
                 .Where(p => p.CreatedById == userId)
@@ -162,27 +195,33 @@ namespace Identity.Controllers
                 .Select(s => new SelectListItem(s.ToString(), s.ToString(), s == task.Status))
                 .ToList();
 
+            ViewData["AvailableTags"] = new MultiSelectList(
+                await _context.Tags.OrderBy(t => t.Name).ToListAsync(),
+                "Id",
+                "Name",
+                task.TaskTags.Select(tt => tt.TagId).ToList()
+            );
+            ViewData["SelectedTagIds"] = task.TaskTags.Select(tt => tt.TagId).ToList();
+
             return View(task);
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, TaskItem task)
+        public async Task<IActionResult> Edit(int id, TaskItem task, List<int>? SelectedTagIds)
         {
-
             ModelState.Remove("CreatedById");
             ModelState.Remove("CreatedBy");
             ModelState.Remove("Project");
             ModelState.Remove("AssignedUser");
-
+            ModelState.Remove("SelectedTagIds");
 
             if (id != task.Id)
                 return NotFound();
 
             if (!ModelState.IsValid)
             {
-                // Repopulate dropdowns
                 var userId = _userManager.GetUserId(User);
                 var projects = await _context.Projects
                     .Where(p => p.CreatedById == userId)
@@ -204,16 +243,25 @@ namespace Identity.Controllers
                     .Select(s => new SelectListItem(s.ToString(), s.ToString(), s == task.Status))
                     .ToList();
 
+                ViewData["AvailableTags"] = new MultiSelectList(
+                    await _context.Tags.OrderBy(t => t.Name).ToListAsync(),
+                    "Id",
+                    "Name",
+                    SelectedTagIds
+                );
+
                 return View(task);
             }
 
             try
             {
-                var existingTask = await _context.Tasks.FindAsync(id);
+                var existingTask = await _context.Tasks
+                    .Include(t => t.TaskTags)
+                    .FirstOrDefaultAsync(t => t.Id == id);
+
                 if (existingTask == null)
                     return NotFound();
 
-                // Update fields
                 existingTask.Title = task.Title;
                 existingTask.Description = task.Description;
                 existingTask.ProjectId = task.ProjectId;
@@ -222,6 +270,16 @@ namespace Identity.Controllers
                 existingTask.Status = task.Status;
                 existingTask.EstimatedHours = task.EstimatedHours;
                 existingTask.UpdatedDate = DateTime.UtcNow;
+
+                _context.TaskTags.RemoveRange(existingTask.TaskTags);
+
+                if (SelectedTagIds != null && SelectedTagIds.Any())
+                {
+                    foreach (var tagId in SelectedTagIds)
+                    {
+                        _context.TaskTags.Add(new TaskTag { TaskId = existingTask.Id, TagId = tagId });
+                    }
+                }
 
                 _context.Update(existingTask);
                 var result = await _context.SaveChangesAsync();
@@ -240,7 +298,6 @@ namespace Identity.Controllers
                 ModelState.AddModelError("", "An error occurred updating the task.");
             }
 
-            // On error, repopulate dropdowns and return view
             var userIdFallback = _userManager.GetUserId(User);
             var projectsFallback = await _context.Projects
                 .Where(p => p.CreatedById == userIdFallback)
@@ -262,6 +319,13 @@ namespace Identity.Controllers
                 .Select(s => new SelectListItem(s.ToString(), s.ToString(), s == task.Status))
                 .ToList();
 
+            ViewData["AvailableTags"] = new MultiSelectList(
+                await _context.Tags.OrderBy(t => t.Name).ToListAsync(),
+                "Id",
+                "Name",
+                SelectedTagIds
+            );
+
             return View(task);
         }
 
@@ -281,6 +345,7 @@ namespace Identity.Controllers
 
             return View(task);
         }
+
         // POST: Tasks/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -307,6 +372,8 @@ namespace Identity.Controllers
                 .Include(t => t.Project)
                 .Include(t => t.AssignedUser)
                 .Include(t => t.CreatedBy)
+                .Include(t => t.TaskTags)
+                .ThenInclude(tt => tt.Tag)
                 .FirstOrDefaultAsync(t => t.Id == id);
 
             if (task == null)

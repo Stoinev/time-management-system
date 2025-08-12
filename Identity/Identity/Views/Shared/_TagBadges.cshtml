@@ -1,0 +1,24 @@
+﻿@model IEnumerable<Identity.Models.TaskTag>
+
+@if (Model != null && Model.Any())
+{
+    <div class="tag-badges">
+        @foreach (var taskTag in Model)
+        {
+            <span class="badge me-1"
+                  style="background-color: @taskTag.Tag.ColorCode;
+                                 color: @GetTextColor(taskTag.Tag.ColorCode)">
+                @taskTag.Tag.Name
+            </span>
+        }
+    </div>
+}
+
+@functions {
+    string GetTextColor(string backgroundColor)
+    {
+        var color = System.Drawing.ColorTranslator.FromHtml(backgroundColor);
+        var brightness = (color.R * 299 + color.G * 587 + color.B * 114) / 1000;
+        return brightness > 128 ? "#000000" : "#FFFFFF";
+    }
+}

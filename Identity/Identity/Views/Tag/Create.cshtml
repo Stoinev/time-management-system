@@ -1,0 +1,77 @@
+﻿@model Identity.Models.Tag
+
+@{
+    ViewData["Title"] = "Create Tag";
+}
+
+<h1>Create New Tag</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" placeholder="Enter tag name" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ColorCode" class="form-label">Color</label>
+                <div class="input-group">
+                    <input asp-for="ColorCode" type="color" class="form-control form-control-color" style="max-width: 100px;" />
+                    <input asp-for="ColorCode" type="text" class="form-control" placeholder="#FF0000" readonly />
+                </div>
+                <span asp-validation-for="ColorCode" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label>Preview</label>
+                <div>
+                    <span id="tagPreview" class="badge fs-6" style="padding: 8px 16px;">
+                        Sample Tag
+                    </span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const colorPicker = document.querySelector('input[type="color"]');
+            const colorText = document.querySelector('input[type="text"][name="ColorCode"]');
+            const preview = document.getElementById('tagPreview');
+
+            function updatePreview() {
+                const color = colorPicker.value;
+                colorText.value = color.toUpperCase();
+                preview.style.backgroundColor = color;
+
+                // Calculate text color for contrast
+                const rgb = parseInt(color.slice(1), 16);
+                const r = (rgb >> 16) & 0xff;
+                const g = (rgb >> 8) & 0xff;
+                const b = rgb & 0xff;
+                const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+                preview.style.color = brightness > 128 ? '#000000' : '#FFFFFF';
+
+                preview.textContent = document.querySelector('input[name="Name"]').value || 'Sample Tag';
+            }
+
+            colorPicker.addEventListener('input', updatePreview);
+            document.querySelector('input[name="Name"]').addEventListener('input', updatePreview);
+
+            // Initial preview
+            updatePreview();
+        });
+    </script>
+}

@@ -1,0 +1,23 @@
+﻿@model List<Identity.Models.Tag>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h5 class="mb-0">Filter by Tags</h5>
+    </div>
+    <div class="card-body">
+        <form asp-controller="Task" asp-action="FilterByTags" method="get">
+            <div class="mb-3">
+                <select name="tagIds" class="form-select" multiple size="5">
+                    @foreach (var tag in Model)
+                    {
+                        <option value="@tag.Id">
+                            @tag.Name (@tag.TaskTags.Count)
+                        </option>
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">Apply Filter</button>
+            <a asp-controller="Task" asp-action="Index" class="btn btn-secondary btn-sm">Clear</a>
+        </form>
+    </div>
+</div>

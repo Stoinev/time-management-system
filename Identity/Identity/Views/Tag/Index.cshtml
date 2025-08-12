@@ -1,0 +1,71 @@
+﻿@model IEnumerable<Identity.ViewModels.TagViewModel>
+
+@{
+    ViewData["Title"] = "Tags";
+}
+
+<h1>Tag Management</h1>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Create New Tag
+    </a>
+</p>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Tag</th>
+            <th>Color</th>
+            <th>Tasks Using Tag</th>
+            <th>Created Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <span class="badge" style="background-color: @item.ColorCode; color: @GetTextColor(item.ColorCode)">
+                        @item.Name
+                    </span>
+                </td>
+                <td>
+                    <div style="width: 30px; height: 30px; background-color: @item.ColorCode; border: 1px solid #ccc; border-radius: 4px;"></div>
+                </td>
+                <td>
+                    <span class="badge bg-secondary">@item.TaskCount tasks</span>
+                </td>
+                <td>
+                    @item.CreatedDate.ToString("MM/dd/yyyy")
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">
+                        <i class="bi bi-trash"></i> Delete
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@functions {
+    string GetTextColor(string backgroundColor)
+    {
+        var color = System.Drawing.ColorTranslator.FromHtml(backgroundColor);
+        var brightness = (color.R * 299 + color.G * 587 + color.B * 114) / 1000;
+        return brightness > 128 ? "#000000" : "#FFFFFF";
+    }
+}

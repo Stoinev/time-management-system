@@ -1,50 +1,1383 @@
 ﻿@model Identity.Models.TaskItem
-
 @{
     ViewData["Title"] = "Task Details";
 }
 
-<h2>Task Details</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - @Model.Title</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .task-details-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            margin: 20px auto;
+            max-width: 800px;
+        }
 
-<div class="mb-3">
-    <strong>Title:</strong> @Model.Title
-</div>
+        .detail-item {
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f1f3f4;
+        }
 
-<div class="mb-3">
-    <strong>Description:</strong> @Model.Description
-</div>
+            .detail-item:last-of-type {
+                border-bottom: none;
+                margin-bottom: 24px;
+            }
 
-<div class="mb-3">
-    <strong>Project:</strong> @Model.Project?.Name
-</div>
+        .detail-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 4px;
+        }
 
-<div class="mb-3">
-    <strong>Assigned To:</strong> @Model.AssignedUser?.UserName ?? "Unassigned"
-</div>
+        .detail-value {
+            color: #6c757d;
+            font-size: 15px;
+        }
 
-<div class="mb-3">
-    <strong>Created By:</strong> @Model.CreatedBy?.UserName
-</div>
+        /* Timer Section Styles */
+        .timer-section {
+            background: linear-gradient(135deg, #f6f9fc 0%, #e9ecef 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
 
-<div class="mb-3">
-    <strong>Priority:</strong> @Model.Priority.ToString()
-</div>
+            .timer-section.active {
+                background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+                border-color: #28a745;
+            }
 
-<div class="mb-3">
-    <strong>Status:</strong> @Model.Status.ToString()
-</div>
+            .timer-section.stopped {
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                border-color: #6c757d;
+            }
 
-<div class="mb-3">
-    <strong>Estimated Hours:</strong> @(Model.EstimatedHours.HasValue? Model.EstimatedHours.Value.ToString("F2") : "N/A")
-</div>
+        .timer-display {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 16px;
+            font-family: 'Courier New', monospace;
+        }
 
-<div class="mb-3">
-    <strong>Created Date:</strong> @Model.CreatedDate.ToString("yyyy-MM-dd HH:mm")
-</div>
+        .timer-section.active .timer-display {
+            color: #155724;
+        }
 
-<div class="mb-3">
-    <strong>Updated Date:</strong> @Model.UpdatedDate.ToString("yyyy-MM-dd HH:mm")
-</div>
+        .timer-section.stopped .timer-display {
+            color: #6c757d;
+        }
 
-<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
-<a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        .timer-controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+        }
+
+            .btn-start:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+                color: white;
+            }
+
+        .btn-stop {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        }
+
+            .btn-stop:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+                color: white;
+            }
+
+        .btn-pause {
+            background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+        }
+
+            .btn-pause:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+                color: white;
+            }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+        }
+
+            .btn-reset:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+                color: white;
+            }
+
+        .btn-continue {
+            background: linear-gradient(135deg, #20c997 0%, #17a2b8 100%);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(32, 201, 151, 0.3);
+        }
+
+            .btn-continue:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(32, 201, 151, 0.4);
+                color: white;
+            }
+
+        .timer-status {
+            font-size: 14px;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .timer-section.active .timer-status {
+            color: #155724;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: #28a745;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+            .pulse-dot.stopped {
+                background: #6c757d;
+                animation: none;
+            }
+
+        .timer-saved-message {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 1px solid #28a745;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 16px;
+            color: #155724;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: slideIn 0.3s ease;
+        }
+
+        @@keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Manual Time Entry Section */
+        .manual-entry-section {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e3e8ff 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .time-input-group {
+            margin-bottom: 16px;
+        }
+
+        .time-input-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            font-size: 14px;
+            display: block;
+        }
+
+        .time-input {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 15px;
+            width: 100%;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+            .time-input:focus {
+                outline: none;
+                border-color: #667eea;
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            }
+
+        .format-help {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 6px;
+        }
+
+        .btn-log-time {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+            .btn-log-time:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+                color: white;
+            }
+
+        /* Activity Section */
+        .activity-section {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .activity-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid #17a2b8;
+            transition: all 0.2s ease;
+        }
+
+            .activity-item:hover {
+                background: #e9ecef;
+                transform: translateX(4px);
+            }
+
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 8px;
+        }
+
+        .activity-user {
+            font-weight: 600;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .activity-date {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .activity-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .activity-stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #495057;
+        }
+
+            .activity-stat i {
+                color: #6c757d;
+                font-size: 12px;
+            }
+
+        .activity-description {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+            .empty-state i {
+                font-size: 48px;
+                color: #dee2e6;
+                margin-bottom: 16px;
+            }
+
+        /* Priority Badge Styles */
+        .badge-priority-low {
+            background-color: #28a745;
+        }
+
+        .badge-priority-medium {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .badge-priority-high {
+            background-color: #fd7e14;
+        }
+
+        .badge-priority-critical {
+            background-color: #dc3545;
+        }
+
+        /* Status Badge Styles */
+        .badge-status-todo {
+            background-color: #6c757d;
+        }
+
+        .badge-status-inprogress {
+            background-color: #007bff;
+        }
+
+        .badge-status-testing {
+            background-color: #17a2b8;
+        }
+
+        .badge-status-done {
+            background-color: #28a745;
+        }
+
+        /* Work Log Button */
+        .work-log-btn {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(23, 162, 184, 0.3);
+        }
+
+            .work-log-btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(23, 162, 184, 0.4);
+                color: white;
+            }
+
+        /* Popup Styles */
+        .time-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+            .time-popup-overlay.show {
+                opacity: 1;
+                visibility: visible;
+            }
+
+        .time-popup {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            min-width: 480px;
+            max-width: 90vw;
+            max-height: 80vh;
+            overflow-y: auto;
+            opacity: 0;
+            transform: translate(-50%, -60%);
+            transition: all 0.3s ease;
+        }
+
+        .time-popup-overlay.show .time-popup {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
+
+        .popup-header {
+            padding: 24px 24px 0 24px;
+            border-bottom: 1px solid #e9ecef;
+            margin-bottom: 0;
+        }
+
+        .popup-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0 0 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #6c757d;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+            .popup-close:hover {
+                background: #f8f9fa;
+                color: #495057;
+            }
+
+        .popup-body {
+            padding: 24px;
+        }
+
+        .popup-actions {
+            padding: 0 24px 24px 24px;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+            .btn-save:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+                color: white;
+            }
+
+        .btn-cancel {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            color: #6c757d;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+            .btn-cancel:hover {
+                background: #e9ecef;
+                border-color: #dee2e6;
+                color: #495057;
+            }
+
+        .format-help {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 16px;
+            padding: 12px;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e3e8ff 100%);
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .format-example {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+
+        .format-legend {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .format-item {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        @@keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <!-- Task Details Card -->
+        <div class="task-details-card">
+            <h2 class="mb-4">Task Details</h2>
+
+            <div class="detail-item">
+                <div class="detail-label">ID:</div>
+                <div class="detail-value" id="taskId">@Model.Id</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Title:</div>
+                <div class="detail-value" id="taskTitle">@Model.Title</div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.Description))
+            {
+                <div class="detail-item">
+                    <div class="detail-label">Description:</div>
+                    <div class="detail-value">@Model.Description</div>
+                </div>
+            }
+
+            <div class="detail-item">
+                <div class="detail-label">Project:</div>
+                <div class="detail-value">@(Model.Project?.Name ?? "No Project")</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Assigned To:</div>
+                <div class="detail-value" id="assignedUser">
+                    @if (Model.AssignedUser != null)
+                    {
+                        <span>@(Model.AssignedUser.UserName ?? Model.AssignedUser.Email)</span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Unassigned</span>
+                    }
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Created By:</div>
+                <div class="detail-value">
+                    @if (Model.CreatedBy != null)
+                    {
+                        <span>@(Model.CreatedBy.UserName ?? Model.CreatedBy.Email)</span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Unknown</span>
+                    }
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Priority:</div>
+                <div class="detail-value">
+                    <span class="badge badge-priority-@Model.Priority.ToString().ToLower()">
+                        @Model.Priority
+                    </span>
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Status:</div>
+                <div class="detail-value">
+                    <span class="badge badge-status-@Model.Status.ToString().ToLower()">
+                        @Model.Status
+                    </span>
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Tags:</div>
+                <div class="detail-value">
+                    @if (Model.TaskTags != null && Model.TaskTags.Any())
+                    {
+                        @foreach (var taskTag in Model.TaskTags)
+                        {
+                            <span class="badge" style="background-color: @taskTag.Tag.ColorCode; color: @GetTextColor(taskTag.Tag.ColorCode)">
+                                @taskTag.Tag.Name
+                            </span>
+                        }
+                    }
+                    else
+                    {
+                        <span>No tags assigned</span>
+                    }
+                </div>
+            </div>
+
+            @if (Model.EstimatedHours.HasValue)
+            {
+                <div class="detail-item">
+                    <div class="detail-label">Estimated Hours:</div>
+                    <div class="detail-value" id="estimatedHours">@Model.EstimatedHours.Value.ToString("F2") hours</div>
+                </div>
+            }
+
+            <div class="detail-item">
+                <div class="detail-label">Created Date:</div>
+                <div class="detail-value">@Model.CreatedDate.ToString("yyyy-MM-dd HH:mm")</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Last Updated:</div>
+                <div class="detail-value">@Model.UpdatedDate.ToString("yyyy-MM-dd HH:mm")</div>
+            </div>
+
+            <!-- Timer Section -->
+            <div class="timer-section" id="timerSection">
+                <h5 class="section-title">
+                    <i class="fas fa-stopwatch"></i>
+                    Timer
+                </h5>
+                <div class="timer-display" id="mainTimerDisplay">00:00:00</div>
+                <div class="timer-controls">
+                    <button class="btn btn-start" id="btnStart" onclick="startTimer()">
+                        <i class="fas fa-play me-2"></i>Start Timer
+                    </button>
+                    <button class="btn btn-pause" id="btnPause" onclick="pauseTimer()" style="display: none;">
+                        <i class="fas fa-pause me-2"></i>Pause
+                    </button>
+                    <button class="btn btn-stop" id="btnStop" onclick="stopTimer()" style="display: none;">
+                        <i class="fas fa-stop me-2"></i>Stop & Save
+                    </button>
+                    <button class="btn btn-reset" id="btnReset" onclick="resetTimer()" style="display: none;">
+                        <i class="fas fa-redo me-2"></i>Reset
+                    </button>
+                    <button class="btn btn-continue" id="btnContinue" onclick="continueTimer()" style="display: none;">
+                        <i class="fas fa-play-circle me-2"></i>Continue
+                    </button>
+                </div>
+                <div class="timer-status" id="timerStatus" style="display: none;">
+                    <div class="pulse-dot" id="pulseDot"></div>
+                    <span id="timerStatusText">Timer is running</span>
+                </div>
+                <div class="timer-saved-message" id="timerSavedMessage" style="display: none;">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span id="savedTimeText">Time saved: 00:00:00</span>
+                </div>
+            </div>
+
+            <!-- Manual Time Entry Section - Commented out for now -->
+            @*<div class="manual-entry-section">
+                <h5 class="section-title">
+                    <i class="fas fa-keyboard"></i>
+                    Manual Time Entry
+                </h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="time-input-group">
+                            <label class="time-input-label">Time Spent</label>
+                            <input type="text" class="time-input" id="manualTimeSpent" placeholder="e.g., 2h 30m">
+                            <div class="format-help">Format: 2w 4d 6h 45m</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="time-input-group">
+                            <label class="time-input-label">Time Remaining (Optional)</label>
+                            <input type="text" class="time-input" id="manualTimeRemaining" placeholder="e.g., 5h 30m">
+                            <div class="format-help">Leave blank to keep current estimate</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="time-input-group">
+                    <label class="time-input-label">Description (optional)</label>
+                    <textarea class="time-input" id="manualDescription" rows="2" placeholder="What did you work on?"></textarea>
+                </div>
+                <button class="btn btn-log-time" onclick="logManualTime()">
+                    <i class="fas fa-save me-2"></i>Log Time
+                </button>
+            </div>*@
+
+            <!-- Activity Section -->
+            <div class="activity-section">
+                <h5 class="section-title">
+                    <i class="fas fa-history"></i>
+                    Activity Log
+                </h5>
+                <div class="activity-list" id="activityList">
+                    <!-- Activities will be loaded here -->
+                    <div class="empty-state">
+                        <i class="fas fa-clock"></i>
+                        <p>No time entries yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 justify-content-between">
+                <a href="/Tasks" class="btn btn-secondary">Back to Tasks</a>
+                <button class="btn work-log-btn" onclick="openTimePopup()">
+                    <i class="fas fa-clock me-2"></i>Work log
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Work Log Popup -->
+    <div class="time-popup-overlay" id="timePopupOverlay">
+        <div class="time-popup">
+            <button class="popup-close" onclick="closeTimePopup()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="popup-header">
+                <h3 class="popup-title">
+                    <i class="fas fa-clock"></i>
+                    Time tracking
+                </h3>
+            </div>
+            <div class="popup-body">
+                <div class="time-input-group">
+                    <label class="time-input-label">Time spent</label>
+                    <input type="text" class="time-input" id="timeSpent" placeholder="e.g., 2h 30m">
+                </div>
+                <div class="time-input-group">
+                    <label class="time-input-label">Time remaining</label>
+                    <input type="text" class="time-input" id="timeRemaining" placeholder="e.g., 5h 30m">
+                </div>
+                <div class="time-input-group">
+                    <label class="time-input-label">Description (optional)</label>
+                    <textarea class="time-input" id="timeDescription" rows="3" placeholder="What did you work on?"></textarea>
+                </div>
+                <div class="format-help">
+                    <div class="format-example">Use the format: 2w 4d 6h 45m</div>
+                    <div class="format-legend">
+                        <div class="format-item">• w = weeks</div>
+                        <div class="format-item">• d = days</div>
+                        <div class="format-item">• h = hours</div>
+                        <div class="format-item">• m = minutes</div>
+                    </div>
+                </div>
+            </div>
+            <div class="popup-actions">
+                <button class="btn btn-cancel" onclick="closeTimePopup()">Cancel</button>
+                <button class="btn btn-save" onclick="saveTimeEntry()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    @Html.AntiForgeryToken()
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        @functions {
+            string GetTextColor(string backgroundColor)
+                {
+                    var color = System.Drawing.ColorTranslator.FromHtml(backgroundColor);
+                    var brightness = (color.R * 299 + color.G * 587 + color.B * 114) / 1000;
+                    return brightness > 128 ? "#000000" : "#FFFFFF";
+                }
+        }
+
+        // Timer variables
+        let timerInterval = null;
+        let timerStartTime = null;
+        let timerPausedTime = 0;
+        let isPaused = false;
+        let activeTimerEntry = null;
+
+        // Task data from model
+        const taskData = {
+            id: @Model.Id,
+            title: '@Html.Raw(Model.Title.Replace("'", "\\'"))',
+            assignedUserId: '@(Model.AssignedUserId ?? "")',
+            projectId: @Model.ProjectId,
+            estimatedHours: @(Model.EstimatedHours?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "null")
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load activities
+            loadActivities();
+        });
+
+        function startTimer() {
+            if (!timerInterval) {
+                timerStartTime = Date.now() - timerPausedTime;
+                timerInterval = setInterval(updateTimer, 1000);
+
+                // Update UI
+                document.getElementById('timerSection').classList.add('active');
+                document.getElementById('timerSection').classList.remove('stopped');
+                document.getElementById('btnStart').style.display = 'none';
+                document.getElementById('btnPause').style.display = 'inline-block';
+                document.getElementById('btnStop').style.display = 'inline-block';
+                document.getElementById('btnReset').style.display = 'inline-block';
+                document.getElementById('btnContinue').style.display = 'none';
+                document.getElementById('timerStatus').style.display = 'flex';
+                document.getElementById('timerStatusText').textContent = 'Timer is running';
+                document.getElementById('timerSavedMessage').style.display = 'none';
+                document.getElementById('pulseDot').classList.remove('stopped');
+                isPaused = false;
+            }
+        }
+
+        function pauseTimer() {
+            if (timerInterval && !isPaused) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                timerPausedTime = Date.now() - timerStartTime;
+
+                // Update UI
+                document.getElementById('btnPause').innerHTML = '<i class="fas fa-play me-2"></i>Resume';
+                document.getElementById('timerStatusText').textContent = 'Timer is paused';
+                document.getElementById('pulseDot').classList.add('stopped');
+                isPaused = true;
+            } else if (isPaused) {
+                timerStartTime = Date.now() - timerPausedTime;
+                timerInterval = setInterval(updateTimer, 1000);
+
+                // Update UI
+                document.getElementById('btnPause').innerHTML = '<i class="fas fa-pause me-2"></i>Pause';
+                document.getElementById('timerStatusText').textContent = 'Timer is running';
+                document.getElementById('pulseDot').classList.remove('stopped');
+                isPaused = false;
+            }
+        }
+
+        function stopTimer() {
+            // Calculate elapsed time
+            const elapsed = isPaused ? timerPausedTime : (Date.now() - timerStartTime);
+            const hours = Math.floor(elapsed / (1000 * 60 * 60));
+            const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
+
+            // Save time entry
+            const timeString = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+            saveWorkLogEntry(timeString, '', 'Timer session');
+
+            // Stop the timer but keep the display
+            clearInterval(timerInterval);
+            timerInterval = null;
+
+            // Show saved message with the time
+            const savedTimeText = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('savedTimeText').textContent = `Time saved: ${savedTimeText}`;
+            document.getElementById('timerSavedMessage').style.display = 'flex';
+
+            // Show success notification
+            showNotification(`Timer stopped - ${savedTimeText} logged successfully!`, 'success');
+
+            // Update UI to stopped state
+            document.getElementById('timerSection').classList.remove('active');
+            document.getElementById('timerSection').classList.add('stopped');
+            document.getElementById('btnPause').style.display = 'none';
+            document.getElementById('btnStop').style.display = 'none';
+            document.getElementById('btnReset').style.display = 'inline-block';
+            document.getElementById('btnContinue').style.display = 'inline-block';
+            document.getElementById('timerStatus').style.display = 'none';
+        }
+
+        function continueTimer() {
+            // Reset internal timer state but keep the display
+            timerStartTime = null;
+            timerPausedTime = 0;
+            isPaused = false;
+
+            // Start a new timer session
+            startTimer();
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            timerStartTime = null;
+            timerPausedTime = 0;
+            isPaused = false;
+
+            // Reset UI completely
+            document.getElementById('mainTimerDisplay').textContent = '00:00:00';
+            document.getElementById('timerSection').classList.remove('active', 'stopped');
+            document.getElementById('btnStart').style.display = 'inline-block';
+            document.getElementById('btnPause').style.display = 'none';
+            document.getElementById('btnStop').style.display = 'none';
+            document.getElementById('btnReset').style.display = 'none';
+            document.getElementById('btnContinue').style.display = 'none';
+            document.getElementById('timerStatus').style.display = 'none';
+            document.getElementById('timerSavedMessage').style.display = 'none';
+            document.getElementById('btnPause').innerHTML = '<i class="fas fa-pause me-2"></i>Pause';
+            document.getElementById('pulseDot').classList.remove('stopped');
+        }
+
+        function updateTimer() {
+            const elapsed = isPaused ? timerPausedTime : (Date.now() - timerStartTime);
+            const hours = Math.floor(elapsed / (1000 * 60 * 60));
+            const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
+
+            document.getElementById('mainTimerDisplay').textContent =
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Work Log Popup Functions
+        function openTimePopup() {
+            document.getElementById('timePopupOverlay').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeTimePopup() {
+            document.getElementById('timePopupOverlay').classList.remove('show');
+            document.body.style.overflow = 'auto';
+
+            // Clear form
+            document.getElementById('timeSpent').value = '';
+            document.getElementById('timeRemaining').value = '';
+            document.getElementById('timeDescription').value = '';
+        }
+
+        function saveTimeEntry() {
+            const timeSpent = document.getElementById('timeSpent').value.trim();
+            const timeRemaining = document.getElementById('timeRemaining').value.trim();
+            const description = document.getElementById('timeDescription').value.trim();
+
+            if (!timeSpent) {
+                alert('Please enter time spent');
+                return;
+            }
+
+            saveWorkLogEntry(timeSpent, timeRemaining, description);
+            closeTimePopup();
+        }
+
+        // Save Work Log Entry
+        function saveWorkLogEntry(timeSpent, timeRemaining, description) {
+            const duration = parseTimeString(timeSpent);
+
+            if (duration === 0) {
+                alert('Please enter a valid time format (e.g., 2h 30m)');
+                return;
+            }
+
+            // Calculate start and end times
+            const endTime = new Date();
+            const startTime = new Date(endTime.getTime() - (duration * 60 * 1000));
+
+            const timeEntryData = {
+                TaskId: taskData.id,
+                Duration: duration,
+                Description: description || '',
+                StartTime: startTime.toISOString(),
+                EndTime: endTime.toISOString()
+            };
+
+            // Get CSRF token
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            // Send to server
+            fetch('/TimeEntries/Create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify(timeEntryData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    showNotification('Time entry saved successfully!', 'success');
+
+                    // Update task estimate if time remaining was provided
+                    if (timeRemaining && taskData.estimatedHours) {
+                        updateTaskEstimate(timeRemaining);
+                    }
+
+                    // Reload activities
+                    loadActivities();
+                } else {
+                    showNotification('Error: ' + (data.message || 'Failed to save time entry'), 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error saving time entry. Please try again.', 'error');
+            });
+        }
+
+        // Manual Time Entry (commented out but keeping the function for future use)
+        /*
+        function logManualTime() {
+            const timeSpent = document.getElementById('manualTimeSpent').value;
+            const timeRemaining = document.getElementById('manualTimeRemaining').value;
+            const description = document.getElementById('manualDescription').value;
+
+            if (!timeSpent) {
+                alert('Please enter time spent');
+                return;
+            }
+
+            saveWorkLogEntry(timeSpent, timeRemaining, description);
+
+            // Clear form
+            document.getElementById('manualTimeSpent').value = '';
+            document.getElementById('manualTimeRemaining').value = '';
+            document.getElementById('manualDescription').value = '';
+        }
+        */
+
+        // Update task estimate
+        function updateTaskEstimate(timeRemaining) {
+            const remainingHours = parseTimeString(timeRemaining) / 60;
+
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            fetch('/Tasks/UpdateEstimate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify({
+                    TaskId: taskData.id,
+                    EstimatedHours: remainingHours
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update display
+                    const estimateElement = document.getElementById('estimatedHours');
+                    if (estimateElement) {
+                        estimateElement.textContent = `${remainingHours.toFixed(2)} hours`;
+                    }
+                }
+            })
+            .catch(error => console.error('Error updating estimate:', error));
+        }
+
+        // Parse time string (e.g., "2h 30m" to minutes)
+        function parseTimeString(timeStr) {
+            if (!timeStr) return 0;
+
+            let totalMinutes = 0;
+            const regex = /(\d+\.?\d*)([wdhm])/g;
+            let match;
+
+            while ((match = regex.exec(timeStr)) !== null) {
+                const value = parseFloat(match[1]);
+                const unit = match[2];
+
+                switch (unit) {
+                    case 'w':
+                        totalMinutes += value * 7 * 24 * 60;
+                        break;
+                    case 'd':
+                        totalMinutes += value * 24 * 60;
+                        break;
+                    case 'h':
+                        totalMinutes += value * 60;
+                        break;
+                    case 'm':
+                        totalMinutes += value;
+                        break;
+                }
+            }
+
+            return Math.round(totalMinutes);
+        }
+
+        // Format minutes to readable string
+        function formatMinutes(minutes) {
+            if (!minutes && minutes !== 0) return '0m';
+
+            const days = Math.floor(minutes / (24 * 60));
+            const hours = Math.floor((minutes % (24 * 60)) / 60);
+            const mins = Math.round(minutes % 60);
+
+            let result = [];
+            if (days > 0) result.push(`${days}d`);
+            if (hours > 0) result.push(`${hours}h`);
+            if (mins > 0 || result.length === 0) result.push(`${mins}m`);
+
+            return result.join(' ');
+        }
+
+        // Load activities from server
+        function loadActivities() {
+            fetch(`/TimeEntries/GetByTask/@Model.Id`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    displayActivities(data);
+                })
+                .catch(error => {
+                    console.error('Error loading activities:', error);
+                    document.getElementById('activityList').innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-clock"></i>
+                            <p>No time entries yet</p>
+                        </div>
+                    `;
+                });
+        }
+
+        // Display activities in the list
+        function displayActivities(activities) {
+            const activityList = document.getElementById('activityList');
+
+            if (!activities || activities.length === 0) {
+                activityList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-clock"></i>
+                        <p>No time entries yet</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Calculate total time spent
+            const totalMinutes = activities.reduce((sum, a) => sum + (a.duration || 0), 0);
+            const totalFormatted = formatMinutes(totalMinutes);
+
+            let html = `
+                <div class="mb-3 p-2 bg-light rounded">
+                    <strong>Total Time Logged:</strong> ${totalFormatted}
+                </div>
+            `;
+
+            html += activities.map(activity => {
+                const userName = activity.user ?
+                    (activity.user.userName || activity.user.email || 'Unknown User') :
+                    (activity.userId || 'Unknown User');
+
+                return `
+                <div class="activity-item" style="animation: slideIn 0.3s ease;">
+                    <div class="activity-header">
+                        <div class="activity-user">
+                            <i class="fas fa-user-circle"></i>
+                            ${escapeHtml(userName)}
+                        </div>
+                        <div class="activity-date">
+                            ${formatDate(activity.createdDate)}
+                        </div>
+                    </div>
+                    <div class="activity-details">
+                        <div class="activity-stat">
+                            <i class="fas fa-clock"></i>
+                            <span>Duration: <strong>${formatMinutes(activity.duration)}</strong></span>
+                        </div>
+                        ${activity.startTime && activity.endTime ? `
+                        <div class="activity-stat">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>${formatTimeRange(activity.startTime, activity.endTime)}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+                    ${activity.description ? `
+                    <div class="activity-description">
+                        <i class="fas fa-comment-alt me-2"></i>${escapeHtml(activity.description)}
+                    </div>
+                    ` : ''}
+                </div>
+            `}).join('');
+
+            activityList.innerHTML = html;
+        }
+
+        // Format time range
+        function formatTimeRange(startTime, endTime) {
+            const start = new Date(startTime);
+            const end = new Date(endTime);
+
+            const timeOptions = { hour: '2-digit', minute: '2-digit' };
+            const startTimeStr = start.toLocaleTimeString([], timeOptions);
+            const endTimeStr = end.toLocaleTimeString([], timeOptions);
+
+            // If same day, show time range
+            if (start.toDateString() === end.toDateString()) {
+                return `${startTimeStr} - ${endTimeStr}`;
+            } else {
+                // Different days
+                return `${start.toLocaleDateString()} ${startTimeStr} - ${end.toLocaleDateString()} ${endTimeStr}`;
+            }
+        }
+
+        // Format date for display
+        function formatDate(date) {
+            if (!date) return 'Unknown date';
+
+            const d = new Date(date);
+            const now = new Date();
+            const diffMs = now - d;
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffDays === 0) {
+                const diffHours = Math.floor(diffMs / 3600000);
+                if (diffHours === 0) {
+                    const diffMins = Math.floor(diffMs / 60000);
+                    if (diffMins <= 1) {
+                        return 'Just now';
+                    }
+                    return `${diffMins} minutes ago`;
+                }
+                return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+            } else if (diffDays === 1) {
+                return 'Yesterday';
+            } else if (diffDays < 7) {
+                return `${diffDays} days ago`;
+            } else {
+                return d.toLocaleDateString();
+            }
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            if (!text) return '';
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.toString().replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // Show notification
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} position-fixed top-0 end-0 m-3`;
+            notification.style.zIndex = '10000';
+            notification.style.animation = 'slideIn 0.3s ease';
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                ${escapeHtml(message)}
+            `;
+
+            document.body.appendChild(notification);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Event listeners for popup
+        document.getElementById('timePopupOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeTimePopup();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeTimePopup();
+            }
+        });
+      
+        // Add animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @@keyframes slideOut {
+                from {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateX(100%);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
