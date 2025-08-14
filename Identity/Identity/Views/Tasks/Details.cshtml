@@ -682,7 +682,7 @@
                     {
                         @foreach (var taskTag in Model.TaskTags)
                         {
-                            <span class="badge" style="background-color: @taskTag.Tag.ColorCode; color: @GetTextColor(taskTag.Tag.ColorCode)">
+                            <span class="badge" style="background-color: @taskTag.Tag.ColorCode; color: white">
                                 @taskTag.Tag.Name
                             </span>
                         }
@@ -1033,7 +1033,7 @@
             if (duration === 0) {
                 alert('Please enter a valid time format (e.g., 2h 30m)');
                 return;
-            }
+             }
 
             // Calculate start and end times
             const endTime = new Date();

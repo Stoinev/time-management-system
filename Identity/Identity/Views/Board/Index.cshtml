@@ -4,8 +4,12 @@
     var projects = ViewData["UserProjects"] as List<Identity.Models.Project> ?? new List<Identity.Models.Project>();
 }
 
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src = "https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
 
 <style>
     body {
@@ -1174,16 +1178,201 @@
     };
 
     // Initialize board when page loads
-    document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function() {
         console.log('DOM loaded, initializing board...');
-        console.log('Found board container:', document.querySelector('.board-container'));
-        console.log('Found todo tasks container:', document.getElementById('todoTasks'));
 
         renderTasks();
         setupEventListeners();
+        initializeDragAndDrop();
 
         console.log('Board initialization complete');
     });
+
+
+        function getStatusFromColumnId(columnId) {
+        console.log('getStatusFromColumnId called with:', columnId);
+        switch(columnId) {
+            case 'todoTasks': return 'ToDo';
+            case 'inprogressTasks': return 'InProgress';
+            case 'testingTasks': return 'Testing';
+            case 'doneTasks': return 'Done';
+            default:
+                console.error('Unknown column ID:', columnId);
+                return 'ToDo'; // fallback
+        }
+    }
+
+        var isDragging = false;
+
+        function initializeDragAndDrop() {
+        // Make all task containers sortable and connected
+        $("#todoTasks, #inprogressTasks, #testingTasks, #doneTasks").sortable({
+            connectWith: "#todoTasks, #inprogressTasks, #testingTasks, #doneTasks",
+            placeholder: "task-placeholder",
+            cursor: "move",
+            opacity: 0.8,
+            tolerance: "pointer",
+            appendTo: "body",
+            helper: "clone",
+
+            // When user starts dragging
+            start: function(event, ui) {
+                isDragging = true;
+                ui.item.addClass('dragging');
+                ui.item.data('original-status', getStatusFromColumn(ui.item.parent()));
+            },
+
+            // When item is dropped
+            stop: function(event, ui) {
+                ui.item.removeClass('dragging');
+
+                setTimeout(function() {
+                    isDragging = false;
+                }, 100);
+            },
+
+            // After position/status change
+            update: function(event, ui) {
+                // Only process this once (the receiving list will trigger it)
+                if (this === ui.item.parent()[0]) {
+                    var taskCard = ui.item.find('.task-card')[0];
+                    if (!taskCard) {
+                        taskCard = ui.item[0]; // If the item itself is the task card
+                    }
+
+                    var taskId = $(taskCard).attr('onclick').match(/\d+/)[0];
+
+                    // Get the new status from the container that received the item
+                    var targetContainer = ui.item.parent();
+                    var newStatus = getStatusFromColumnId(targetContainer.attr('id'));
+                    var newPosition = ui.item.index();
+
+                    console.log('Task moved to container:', targetContainer.attr('id'), 'New status:', newStatus);
+                    updateTaskStatus(taskId, newStatus, newPosition, ui);
+                }
+            }
+        });
+    }
+    
+// Helper function to get status from column ID
+        // Replace your existing getStatusFromColumn function with this improved version
+    function getStatusFromColumn(element) {
+        console.log('getStatusFromColumn called with element:', element);
+
+        // Find the closest parent with an ID that matches our task containers
+        var container = element.closest('#todoTasks, #inprogressTasks, #testingTasks, #doneTasks');
+        console.log('Found container:', container);
+
+        if (container.length === 0) {
+            // If closest doesn't work, walk up manually
+            var current = element;
+            var attempts = 0;
+            while (current.length > 0 && attempts < 10) {
+                var id = current.attr('id');
+                console.log('Checking element with ID:', id);
+                if (id === 'todoTasks' || id === 'inprogressTasks' || id === 'testingTasks' || id === 'doneTasks') {
+                    container = current;
+                    break;
+                }
+                current = current.parent();
+                attempts++;
+            }
+        }
+
+        var columnId = container.attr('id');
+        console.log('Final column ID:', columnId);
+
+        switch(columnId) {
+            case 'todoTasks': return 'ToDo';
+            case 'inprogressTasks': return 'InProgress';
+            case 'testingTasks': return 'Testing';
+            case 'doneTasks': return 'Done';
+            default:
+                console.error('Could not determine status from column ID:', columnId);
+                return 'ToDo';
+        }
+    }
+
+    function updateTaskStatus(taskId, newStatus, newPosition, ui) {
+        var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+        // Optimistically update the UI (already moved)
+        showNotification('Updating task...', 'info');
+
+        $.ajax({
+            url: '/Board/UpdateTaskStatus',
+            type: 'POST',
+            headers: {
+                'RequestVerificationToken': token
+            },
+            data: {
+                taskId: taskId,
+                newStatus: newStatus,
+                newPosition: newPosition
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Update the task in our local data
+                    var task = allTasks.find(t => t.id == taskId);
+                    if (task) {
+                        task.status = newStatus;
+                    }
+
+                    // Update counts
+                    updateColumnCounts();
+                    showNotification('Task moved successfully!', 'success');
+                } else {
+                    // Revert the drag if failed
+                    $(ui.sender).sortable('cancel');
+                    showNotification('Failed to update task: ' + (response.message || 'Unknown error'), 'error');
+                }
+            },
+            error: function(xhr, status, error) {
+                // Revert the drag on error
+                $(ui.sender).sortable('cancel');
+                showNotification('Error updating task. Please try again.', 'error');
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    // Helper function to update column counts after drag
+        // Replace your existing updateColumnCounts function with this enhanced version
+    function updateColumnCounts() {
+        var columns = [
+            { id: 'todoTasks', countId: 'todoCount' },
+            { id: 'inprogressTasks', countId: 'inprogressCount' },
+            { id: 'testingTasks', countId: 'testingCount' },
+            { id: 'doneTasks', countId: 'doneCount' }
+        ];
+
+        columns.forEach(function(col) {
+            var column = document.getElementById(col.id);
+            var taskCards = column.querySelectorAll('.task-card');
+            var count = taskCards.length;
+
+            // Update count display
+            document.getElementById(col.countId).textContent = count;
+
+            // Handle empty state
+            var emptyColumn = column.querySelector('.empty-column');
+
+            if (count === 0) {
+                // Add "No tasks" if not already present
+                if (!emptyColumn) {
+                    var emptyDiv = document.createElement('div');
+                    emptyDiv.className = 'empty-column';
+                    emptyDiv.innerHTML = '<i class="fas fa-tasks"></i><p>No tasks</p>';
+                    column.appendChild(emptyDiv);
+                }
+            } else {
+                // Remove "No tasks" if present
+                if (emptyColumn) {
+                    emptyColumn.remove();
+                }
+            }
+        });
+    }
 
     function setupEventListeners() {
         // Search functionality
@@ -1228,7 +1417,7 @@
             'ToDo': document.getElementById('todoTasks'),
             'InProgress': document.getElementById('inprogressTasks'),
             'Testing': document.getElementById('testingTasks'),
-            'Done': document.getElementById('doneTasks')
+            'Done': document.getElementById('doneTasks')  
         };
 
         // Clear all columns
@@ -1283,7 +1472,7 @@
         if (task.taskTags && task.taskTags.length > 0) {
             for (var i = 0; i < task.taskTags.length; i++) {
                 var tt = task.taskTags[i];
-                tags += '<span class="task-tag" style="background-color: ' + tt.tag.colorCode + '; color: ' + getTextColor(tt.tag.colorCode) + '">' + tt.tag.name + '</span>';
+                tags += '<span class="task-tag" style="background-color: ' + tt.tag.colorCode + '; color: white;">' + tt.tag.name + '</span>';
             }
         }
 
@@ -1426,21 +1615,36 @@
         button.style.display = 'block';
     }
 
-    function createQuickTask(title, status, input, button) {
-        // Get default project (first available project)
-        var defaultProject = userProjects.length > 0 ? userProjects[0] : null;
+            function createQuickTask(title, status, input, button) {
+                console.log('=== DEBUG CREATE QUICK TASK ===');
+                console.log('Title:', title);
+                console.log('Status:', status);
 
-        if (!defaultProject) {
-            alert('No projects available. Please create a project first.');
-            cancelCreateInput(input, button);
-            return;
-        }
+                var defaultProject = userProjects.length > 0 ? userProjects[0] : null;
 
-        var taskData = {
-            Title: title,
-            ProjectId: defaultProject.id,
-            Status: status
-        };
+                if (!defaultProject) {
+                    alert('No projects available. Please create a project first.');
+                    cancelCreateInput(input, button);
+                    return;
+                }
+
+                // Convert status string to enum value
+                var statusValue;
+                switch(status) {
+                    case 'ToDo': statusValue = 0; break;
+                    case 'InProgress': statusValue = 1; break;
+                    case 'Testing': statusValue = 2; break;
+                    case 'Done': statusValue = 3; break;
+                    default: statusValue = 0; // Default to ToDo
+                }
+
+                var taskData = {
+                    Title: title,
+                    ProjectId: defaultProject.id,
+                    Status: statusValue  // Send numeric value instead of string
+                };
+
+                console.log('Task data being sent:', taskData);
 
         var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
 
@@ -1456,6 +1660,7 @@
             return response.json();
         })
         .then(function(data) {
+            console.log('Server response:', data);
             if (data.success) {
                 // Create new task object and add to allTasks
                 var newTask = {
@@ -1490,6 +1695,10 @@
 
     // Task details modal
     function openTaskDetails(taskId) {
+            // Prevent opening if we're dragging
+            if (isDragging) {
+                return false;
+            }
         // Show loading state
         document.getElementById('modalBodyContent').innerHTML = '<div class="text-center p-4"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
         document.getElementById('taskModal').classList.add('show');
@@ -1539,6 +1748,7 @@
                 console.error('Error loading task details:', error);
                 document.getElementById('modalBodyContent').innerHTML = '<div class="text-center p-4 text-danger">Error loading task details</div>';
             });
+
     }
 
     function closeTaskModal() {
