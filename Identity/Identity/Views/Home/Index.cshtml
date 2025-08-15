@@ -1,20 +1,827 @@
-﻿@using Microsoft.AspNetCore.Identity
-@using Identity.Areas.Identity.Data
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Center - Task Management</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --dark-bg: #1a1d23;
+            --card-bg: #242833;
+            --text-light: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --glow-primary: rgba(102, 126, 234, 0.4);
+            --glow-secondary: rgba(245, 87, 108, 0.4);
+        }
 
-@inject UserManager<Identity.Areas.Identity.Data.ApplicationUser> UserManager
-@inject SignInManager<Identity.Areas.Identity.Data.ApplicationUser> SignInManager
+        body {
+            background: var(--dark-bg);
+            color: var(--text-light);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-x: hidden;
+        }
 
-@{
-    ViewData["Title"] = "Home Page";
-}
+        .command-header {
+            background: linear-gradient(135deg, rgba(26, 29, 35, 0.95) 0%, rgba(36, 40, 51, 0.95) 100%);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <!--<p>User Id : @ViewData["UserID"]</p>-->
-</div>
+        .mission-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+            text-shadow: 0 0 30px var(--glow-primary);
+        }
 
+        .status-time {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-<!--@if (User.IsInRole("Admin"))
-{
-    <h1>Hello</h1>
-}-->
+        .pulse-dot {
+            width: 12px;
+            height: 12px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse-glow 2s infinite;
+            box-shadow: 0 0 10px #00ff88;
+        }
+
+        @@keyframes pulse-glow {
+            0%, 100%
+
+        {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(1.2);
+            opacity: 0.7;
+        }
+
+        }
+
+        .command-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            padding: 30px 0;
+        }
+
+        .status-board {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+            .status-board::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 3px;
+                background: var(--primary-gradient);
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .status-board:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+                border-color: rgba(102, 126, 234, 0.5);
+            }
+
+                .status-board:hover::before {
+                    opacity: 1;
+                }
+
+        .board-header {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            margin-bottom: 20px;
+        }
+
+        .board-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .board-icon {
+            font-size: 1.3rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .metric-large {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .trend-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
+        .trend-up {
+            color: #00ff88;
+        }
+
+        .trend-down {
+            color: #ff4757;
+        }
+
+        .trend-stable {
+            color: var(--text-muted);
+        }
+
+        .quick-launch {
+            grid-column: 1 / -1;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .launch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .launch-button {
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 12px;
+            padding: 20px;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+            .launch-button::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transition: left 0.5s;
+            }
+
+            .launch-button:hover::before {
+                left: 100%;
+            }
+
+            .launch-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 24px rgba(102, 126, 234, 0.5);
+                color: white;
+                text-decoration: none;
+            }
+
+            .launch-button.secondary {
+                background: var(--secondary-gradient);
+                box-shadow: 0 4px 16px rgba(245, 87, 108, 0.3);
+            }
+
+                .launch-button.secondary:hover {
+                    box-shadow: 0 8px 24px rgba(245, 87, 108, 0.5);
+                }
+
+            .launch-button.success {
+                background: var(--success-gradient);
+                box-shadow: 0 4px 16px rgba(79, 172, 254, 0.3);
+            }
+
+                .launch-button.success:hover {
+                    box-shadow: 0 8px 24px rgba(79, 172, 254, 0.5);
+                }
+
+        .activity-feed {
+            max-height: 300px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border-color) transparent;
+        }
+
+            .activity-feed::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .activity-feed::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            .activity-feed::-webkit-scrollbar-thumb {
+                background: var(--border-color);
+                border-radius: 3px;
+            }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+            transition: all 0.2s ease;
+        }
+
+            .activity-item:hover {
+                background: rgba(102, 126, 234, 0.05);
+                margin: 0 -12px;
+                padding-left: 12px;
+                padding-right: 12px;
+                border-radius: 8px;
+            }
+
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+            .activity-icon.create {
+                background: rgba(0, 255, 136, 0.2);
+                color: #00ff88;
+            }
+
+            .activity-icon.update {
+                background: rgba(102, 126, 234, 0.2);
+                color: #667eea;
+            }
+
+            .activity-icon.complete {
+                background: rgba(79, 172, 254, 0.2);
+                color: #4facfe;
+            }
+
+            .activity-icon.delete {
+                background: rgba(255, 71, 87, 0.2);
+                color: #ff4757;
+            }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 2px;
+        }
+
+        .activity-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .chart-container {
+            height: 200px;
+            margin-top: 16px;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4757;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            animation: notification-pulse 2s infinite;
+        }
+
+        @@keyframes notification-pulse {
+            0%, 100%
+
+        {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+
+        }
+
+        .progress-ring {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 16px;
+        }
+
+        .progress-circle {
+            stroke: var(--border-color);
+            stroke-width: 4;
+            fill: none;
+        }
+
+            .progress-circle.active {
+                stroke: url(#gradient);
+                stroke-dasharray: 188.5;
+                stroke-dashoffset: 188.5;
+                animation: progress-draw 2s ease-out forwards;
+            }
+
+        @@keyframes progress-draw {
+            to
+
+        {
+            stroke-dashoffset: calc(188.5 - (188.5 * var(--progress)) / 100);
+        }
+
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+            .loading i {
+                animation: spin 1s linear infinite;
+            }
+
+        @@keyframes spin {
+            from
+
+        {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <div class="command-header">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="mission-title">COMMAND CENTER</h1>
+                    <div class="status-time">
+                        <div class="pulse-dot"></div>
+                        <span id="currentTime">SYSTEM ONLINE</span>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="position-relative">
+                        <i class="fas fa-bell" style="font-size: 1.2rem; color: var(--text-muted);"></i>
+                        <div class="notification-badge" id="notificationCount">3</div>
+                    </div>
+                    <div style="color: var(--text-muted);">
+                        <i class="fas fa-user-circle me-2"></i>
+                        <span>Commander</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Quick Launch Panel -->
+        <div class="quick-launch">
+            <div class="board-header">
+                <h3 class="board-title">
+                    <i class="fas fa-rocket board-icon"></i>
+                    Quick Launch
+                </h3>
+            </div>
+            <div class="launch-grid">
+                <a href="/Tasks/Create" class="launch-button">
+                    <i class="fas fa-plus"></i>
+                    Create Task
+                </a>
+                <a href="/Projects/Create" class="launch-button secondary">
+                    <i class="fas fa-folder-plus"></i>
+                    New Project
+                </a>
+                <a href="/Tag/Create" class="launch-button success">
+                    <i class="fas fa-tag"></i>
+                    Add Tag
+                </a>
+                <a href="/Reports" class="launch-button">
+                    <i class="fas fa-chart-line"></i>
+                    View Reports
+                </a>
+            </div>
+        </div>
+
+        <!-- Status Boards Grid -->
+        <div class="command-grid">
+            <!-- Task Overview -->
+            <div class="status-board">
+                <div class="board-header">
+                    <h3 class="board-title">
+                        <i class="fas fa-tasks board-icon"></i>
+                        Mission Status
+                    </h3>
+                </div>
+                <div class="text-center">
+                    <div class="progress-ring">
+                        <svg width="80" height="80">
+                            <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#667eea" />
+                                    <stop offset="100%" stop-color="#764ba2" />
+                                </linearGradient>
+                            </defs>
+                            <circle class="progress-circle" cx="40" cy="40" r="30"></circle>
+                            <circle class="progress-circle active" cx="40" cy="40" r="30" style="--progress: 75;"></circle>
+                        </svg>
+                    </div>
+                    <div class="metric-large" id="taskCompletion">75%</div>
+                    <div class="metric-label">Mission Complete</div>
+                    <div class="trend-indicator trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+12% from last week</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Projects -->
+            <div class="status-board">
+                <div class="board-header">
+                    <h3 class="board-title">
+                        <i class="fas fa-project-diagram board-icon"></i>
+                        Active Operations
+                    </h3>
+                </div>
+                <div class="metric-large" id="activeProjects">8</div>
+                <div class="metric-label">Projects Running</div>
+                <div class="trend-indicator trend-stable">
+                    <i class="fas fa-minus"></i>
+                    <span>No change</span>
+                </div>
+                <div class="mt-3" style="font-size: 0.85rem; color: var(--text-muted);">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>Critical:</span>
+                        <span class="text-danger">2</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>On Track:</span>
+                        <span class="text-success">5</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Planning:</span>
+                        <span class="text-warning">1</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Today's Focus -->
+            <div class="status-board">
+                <div class="board-header">
+                    <h3 class="board-title">
+                        <i class="fas fa-crosshairs board-icon"></i>
+                        Today's Focus
+                    </h3>
+                </div>
+                <div class="metric-large" id="todayTasks">12</div>
+                <div class="metric-label">Tasks Due Today</div>
+                <div class="trend-indicator trend-up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>3 completed</span>
+                </div>
+                <div class="mt-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span style="font-size: 0.85rem;">Progress</span>
+                        <span style="font-size: 0.85rem; color: var(--text-muted);">25%</span>
+                    </div>
+                    <div style="background: var(--border-color); height: 6px; border-radius: 3px;">
+                        <div style="background: var(--primary-gradient); height: 100%; width: 25%; border-radius: 3px; transition: width 0.5s ease;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Performance -->
+            <div class="status-board">
+                <div class="board-header">
+                    <h3 class="board-title">
+                        <i class="fas fa-users board-icon"></i>
+                        Team Status
+                    </h3>
+                </div>
+                <div class="metric-large" id="teamEfficiency">94%</div>
+                <div class="metric-label">Team Efficiency</div>
+                <div class="trend-indicator trend-up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+5% this week</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="teamChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Priority Alerts -->
+            <div class="status-board">
+                <div class="board-header">
+                    <h3 class="board-title">
+                        <i class="fas fa-exclamation-triangle board-icon"></i>
+                        Priority Alerts
+                    </h3>
+                </div>
+                <div class="metric-large text-warning" id="criticalTasks">3</div>
+                <div class="metric-label">Critical Items</div>
+                <div class="mt-3">
+                    <div class="d-flex align-items-center mb-2">
+                        <div style="width: 8px; height: 8px; background: #ff4757; border-radius: 50%; margin-right: 8px;"></div>
+                        <span style="font-size: 0.85rem;">2 overdue tasks</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <div style="width: 8px; height: 8px; background: #ffa502; border-radius: 50%; margin-right: 8px;"></div>
+                        <span style="font-size: 0.85rem;">1 approaching deadline</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div style="width: 8px; height: 8px; background: #747d8c; border-radius: 50%; margin-right: 8px;"></div>
+                        <span style="font-size: 0.85rem;">0 blocked tasks</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="status-board" style="grid-column: span 2;">
+                <div class="board-header">
+                    <h3 class="board-title">
+                        <i class="fas fa-history board-icon"></i>
+                        Mission Log
+                    </h3>
+                </div>
+                <div class="activity-feed" id="activityFeed">
+                    <div class="loading">
+                        <i class="fas fa-spinner"></i>
+                        <span>Loading activity log...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script>
+        class CommandCenter {
+            constructor() {
+                this.init();
+                this.startRealTimeUpdates();
+            }
+
+            init() {
+                this.updateClock();
+                this.loadDashboardData();
+                this.initializeCharts();
+                this.loadActivityFeed();
+
+                // Update clock every second
+                setInterval(() => this.updateClock(), 1000);
+
+                // Refresh data every 30 seconds
+                setInterval(() => this.refreshData(), 30000);
+            }
+
+            updateClock() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('en-US', {
+                    hour12: false,
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                document.getElementById('currentTime').textContent = `SYSTEM ONLINE - ${timeString}`;
+            }
+
+            async loadDashboardData() {
+                // Simulate API calls - replace with your actual endpoints
+                try {
+                    // Replace these with your actual API endpoints
+                    // const tasksData = await fetch('/api/dashboard/tasks').then(r => r.json());
+                    // const projectsData = await fetch('/api/dashboard/projects').then(r => r.json());
+
+                    // Mock data for demonstration
+                    const data = {
+                        taskCompletion: 75,
+                        activeProjects: 8,
+                        todayTasks: 12,
+                        teamEfficiency: 94,
+                        criticalTasks: 3,
+                        notifications: 5
+                    };
+
+                    this.updateMetrics(data);
+                } catch (error) {
+                    console.error('Failed to load dashboard data:', error);
+                }
+            }
+
+            updateMetrics(data) {
+                // Update metric displays with animation
+                this.animateCounter('taskCompletion', data.taskCompletion, '%');
+                this.animateCounter('activeProjects', data.activeProjects);
+                this.animateCounter('todayTasks', data.todayTasks);
+                this.animateCounter('teamEfficiency', data.teamEfficiency, '%');
+                this.animateCounter('criticalTasks', data.criticalTasks);
+                document.getElementById('notificationCount').textContent = data.notifications;
+            }
+
+            animateCounter(elementId, targetValue, suffix = '') {
+                const element = document.getElementById(elementId);
+                const currentValue = parseInt(element.textContent) || 0;
+                const increment = (targetValue - currentValue) / 20;
+                let current = currentValue;
+
+                const timer = setInterval(() => {
+                    current += increment;
+                    if ((increment > 0 && current >= targetValue) || (increment < 0 && current <= targetValue)) {
+                        current = targetValue;
+                        clearInterval(timer);
+                    }
+                    element.textContent = Math.round(current) + suffix;
+                }, 50);
+            }
+
+            initializeCharts() {
+                // Team performance chart
+                const ctx = document.getElementById('teamChart');
+                if (ctx) {
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                            datasets: [{
+                                data: [88, 92, 85, 94, 97, 89, 94],
+                                borderColor: '#667eea',
+                                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                                borderWidth: 2,
+                                fill: true,
+                                tension: 0.4,
+                                pointBackgroundColor: '#667eea',
+                                pointBorderWidth: 0,
+                                pointRadius: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { display: false }
+                            },
+                            scales: {
+                                x: {
+                                    display: true,
+                                    grid: { display: false },
+                                    ticks: { color: '#94a3b8', font: { size: 10 } }
+                                },
+                                y: {
+                                    display: false,
+                                    grid: { display: false }
+                                }
+                            },
+                            elements: {
+                                point: { hoverRadius: 6 }
+                            }
+                        }
+                    });
+                }
+            }
+
+            async loadActivityFeed() {
+                // Simulate loading delay
+                setTimeout(() => {
+                    const activities = [
+                        { icon: 'create', text: 'New task created: "Update user interface"', time: '2 minutes ago', type: 'create' },
+                        { icon: 'complete', text: 'Task completed: "Fix login bug"', time: '15 minutes ago', type: 'complete' },
+                        { icon: 'update', text: 'Project updated: "Mobile App Redesign"', time: '32 minutes ago', type: 'update' },
+                        { icon: 'create', text: 'New project started: "API Documentation"', time: '1 hour ago', type: 'create' },
+                        { icon: 'complete', text: 'Milestone reached: "Phase 1 Complete"', time: '2 hours ago', type: 'complete' },
+                        { icon: 'update', text: 'Task priority changed to High', time: '3 hours ago', type: 'update' },
+                        { icon: 'delete', text: 'Outdated task removed from backlog', time: '4 hours ago', type: 'delete' }
+                    ];
+
+                    const feedHtml = activities.map(activity => `
+                        <div class="activity-item">
+                            <div class="activity-icon ${activity.type}">
+                                <i class="fas fa-${this.getActivityIcon(activity.type)}"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-text">${activity.text}</div>
+                                <div class="activity-time">${activity.time}</div>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    document.getElementById('activityFeed').innerHTML = feedHtml;
+                }, 1000);
+            }
+
+            getActivityIcon(type) {
+                const icons = {
+                    create: 'plus',
+                    update: 'edit',
+                    complete: 'check',
+                    delete: 'trash'
+                };
+                return icons[type] || 'info';
+            }
+
+            startRealTimeUpdates() {
+                // Simulate real-time updates
+                setInterval(() => {
+                    // Update notification count randomly
+                    const currentCount = parseInt(document.getElementById('notificationCount').textContent);
+                    const newCount = Math.max(0, currentCount + (Math.random() > 0.7 ? 1 : -1));
+                    document.getElementById('notificationCount').textContent = newCount;
+                }, 10000);
+            }
+
+            refreshData() {
+                console.log('Refreshing dashboard data...');
+                this.loadDashboardData();
+                // You can add visual indicators here for data refresh
+            }
+        }
+
+        // Initialize Command Center when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            new CommandCenter();
+        });
+    </script>
+</body>
+</html>

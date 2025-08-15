@@ -23,7 +23,14 @@ namespace Identity
             builder.Services.AddRazorPages();
             builder.Services.AddScoped<TagService>();
 
-            // Uncomment the following lines to configure Identity options as needed.
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             builder.Services.Configure<IdentityOptions>(options =>
             {
                 // Password settings
@@ -54,6 +61,11 @@ namespace Identity
 
             app.UseRouting();
 
+
+            app.UseAuthentication();
+
+
+            app.UseSession();
             app.UseAuthorization();
 
             app.MapControllerRoute(

@@ -5,9 +5,8 @@
 }
 
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src = "https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
 
@@ -399,6 +398,57 @@
         transform: translateX(0);
     }
 
+    /* Priority filter styling */
+    .filter-option[data-filter="priority"] {
+        padding-left: 16px; /* Extra padding for the border */
+    }
+
+        .filter-option[data-filter="priority"][data-value=""] {
+            border-left: 4px solid #dee2e6; /* Light gray for "All Priorities" */
+        }
+
+        .filter-option[data-filter="priority"][data-value="Low"] {
+            border-left: 4px solid #28a745; /* Green */
+        }
+
+        .filter-option[data-filter="priority"][data-value="Medium"] {
+            border-left: 4px solid #ffc107; /* Yellow */
+        }
+
+        .filter-option[data-filter="priority"][data-value="High"] {
+            border-left: 4px solid #fd7e14; /* Orange */
+        }
+
+        .filter-option[data-filter="priority"][data-value="Critical"] {
+            border-left: 4px solid #dc3545; /* Red */
+        }
+
+    /* Tag filter styling */
+    .filter-option[data-filter="tag"] {
+        padding-left: 16px; /* Extra padding for the border */
+    }
+
+    .filter-option[data-filter="tag"][data-value=""] {
+        border-left: 4px solid #dee2e6; /* Light gray for "All Tags" */
+    }
+
+    /* Dynamic tag colors will be applied via JavaScript */
+    .filter-option[data-filter="tag"]:not([data-value=""]) {
+        border-left: 4px solid #6c757d; /* Default color, will be overridden by JS */
+    }
+
+    /* Multi-select filter styling */
+    .filter-option.multi-select.selected {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+        .filter-option.multi-select.selected:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+            color: white;
+            padding-left: 16px; /* Don't indent when selected */
+        }
+
     .filter-option {
         padding: 10px 16px;
         cursor: pointer;
@@ -406,6 +456,8 @@
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         color: #495057;
         font-size: 14px;
+        display: flex;
+        align-items: center;
     }
 
         .filter-option:hover {
@@ -638,6 +690,62 @@
         gap: 12px;
         margin-bottom: 12px;
         flex-wrap: wrap;
+    }
+
+    .timer-status {
+        font-size: 14px;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .timer-section.active .timer-status {
+        color: #155724;
+    }
+
+    .pulse-dot {
+        width: 8px;
+        height: 8px;
+        background: #28a745;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+    }
+
+        .pulse-dot.stopped {
+            background: #6c757d;
+            animation: none;
+        }
+
+    .timer-saved-message {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        border: 1px solid #28a745;
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin-top: 16px;
+        color: #155724;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: slideIn 0.3s ease;
+    }
+
+    @@keyframes pulse {
+        0%
+
+    {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+
+    100% {
+        opacity: 1;
+    }
+
     }
 
     .btn-start {
@@ -1024,9 +1132,6 @@
     <div class="board-header">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 class="mb-0">Project Board</h2>
-            <a href="/Tasks/Create" class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i>Create Task
-            </a>
         </div>
 
         <div class="d-flex align-items-center gap-3">
@@ -1043,34 +1148,43 @@
                     <div class="filter-category">
                         <span>Project</span>
                         <i class="fas fa-chevron-right"></i>
-                        <div class="filter-subcategory">
-                            @foreach (var project in projects)
-                            {
-                                <div class="filter-option" data-filter="project" data-value="@project.Name">
-                                    @project.Name
-                                </div>
-                            }
+                        <div class="filter-subcategory" id="projectsFilterDropdown">
+                            <div class="filter-option" data-filter="project" data-value="">All Projects</div>
+                            <!-- Projects will be populated by JavaScript -->
                         </div>
                     </div>
                     <div class="filter-category">
                         <span>Priority</span>
                         <i class="fas fa-chevron-right"></i>
                         <div class="filter-subcategory">
-                            <div class="filter-option" data-filter="priority" data-value="Low">Low</div>
-                            <div class="filter-option" data-filter="priority" data-value="Medium">Medium</div>
-                            <div class="filter-option" data-filter="priority" data-value="High">High</div>
-                            <div class="filter-option" data-filter="priority" data-value="Critical">Critical</div>
+                            <div class="filter-option multi-select" data-filter="priority" data-value="">
+                                All Priorities
+                            </div>
+                            <div class="filter-option multi-select" data-filter="priority" data-value="Low">
+                                Low
+                            </div>
+                            <div class="filter-option multi-select" data-filter="priority" data-value="Medium">
+                                Medium
+                            </div>
+                            <div class="filter-option multi-select" data-filter="priority" data-value="High">
+                                High
+                            </div>
+                            <div class="filter-option multi-select" data-filter="priority" data-value="Critical">
+                                Critical
+                            </div>
                         </div>
                     </div>
                     <div class="filter-category">
-                        <span>Status</span>
+                        <span>Tags</span>
                         <i class="fas fa-chevron-right"></i>
-                        <div class="filter-subcategory">
-                            <div class="filter-option" data-filter="status" data-value="ToDo">To Do</div>
-                            <div class="filter-option" data-filter="status" data-value="InProgress">In Progress</div>
-                            <div class="filter-option" data-filter="status" data-value="Testing">Testing</div>
-                            <div class="filter-option" data-filter="status" data-value="Done">Done</div>
+                        <div class="filter-subcategory" id="tagsFilterDropdown">
+                            <div class="filter-option multi-select" data-filter="tag" data-value="">All Tags</div>
+                            <!-- Tags will be populated by JavaScript -->
                         </div>
+                    </div>
+                    <div class="filter-category single" onclick="clearAllFilters()">
+                        <span>Clear All Filters</span>
+                        <i class="fas fa-times"></i>
                     </div>
                 </div>
             </div>
@@ -1171,25 +1285,197 @@
     console.log('Processed projects:', userProjects.length);
 
     var activeFilters = {
+        priority: [], // Changed to array for multiple selection
         project: '',
-        priority: '',
-        status: '',
+        tag: [], // Changed to array for multiple selection
         search: ''
     };
 
     // Initialize board when page loads
-        document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
         console.log('DOM loaded, initializing board...');
 
         renderTasks();
         setupEventListeners();
         initializeDragAndDrop();
+        populateProjectsFilter();
+        populateTagsFilter();
 
         console.log('Board initialization complete');
     });
 
+    function populateProjectsFilter() {
+        var projectsDropdown = document.getElementById('projectsFilterDropdown');
+        if (!projectsDropdown) return;
 
-        function getStatusFromColumnId(columnId) {
+        // Build the HTML for project options
+        var html = '<div class="filter-option" data-filter="project" data-value="">All Projects</div>';
+        for (var i = 0; i < userProjects.length; i++) {
+            var project = userProjects[i];
+            html += '<div class="filter-option" data-filter="project" data-value="' +
+                    escapeHtml(project.name) + '">' +
+                    escapeHtml(project.name) +
+                    '</div>';
+        }
+
+        projectsDropdown.innerHTML = html;
+
+        // Re-bind click events for new project options
+        var projectOptions = projectsDropdown.querySelectorAll('.filter-option');
+        for (var j = 0; j < projectOptions.length; j++) {
+            projectOptions[j].addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                handleMultiSelectFilter(e.currentTarget, false); // Projects are always single select
+            });
+        }
+    }
+
+        function populateTagsFilter() {
+        var tagsDropdown = document.getElementById('tagsFilterDropdown');
+        if (!tagsDropdown) return;
+
+        // Get all unique tags from tasks
+        var allTags = [];
+        var tagMap = new Map();
+
+        for (var i = 0; i < allTasks.length; i++) {
+            var task = allTasks[i];
+            if (task.taskTags && task.taskTags.length > 0) {
+                for (var j = 0; j < task.taskTags.length; j++) {
+                    var taskTag = task.taskTags[j];
+                    var tag = taskTag.tag;
+                    if (tag && !tagMap.has(tag.id)) {
+                        tagMap.set(tag.id, tag);
+                        allTags.push(tag);
+                    }
+                }
+            }
+        }
+
+        // Sort tags alphabetically
+        allTags.sort(function(a, b) {
+            return a.name.localeCompare(b.name);
+        });
+
+        // Build the HTML for tag options - NO CIRCLES, just text
+        var html = '<div class="filter-option multi-select" data-filter="tag" data-value="">All Tags</div>';
+        for (var k = 0; k < allTags.length; k++) {
+            var tag = allTags[k];
+            html += '<div class="filter-option multi-select" data-filter="tag" data-value="' +
+                    escapeHtml(tag.name) + '" data-tag-id="' + tag.id + '" data-tag-color="' +
+                    tag.colorCode + '">' +
+                    escapeHtml(tag.name) +
+                    '</div>';
+        }
+
+        tagsDropdown.innerHTML = html;
+
+        // Apply dynamic border colors using JavaScript
+        var tagOptions = tagsDropdown.querySelectorAll('.filter-option[data-filter="tag"]:not([data-value=""])');
+        for (var l = 0; l < tagOptions.length; l++) {
+            var option = tagOptions[l];
+            var tagColor = option.getAttribute('data-tag-color');
+            if (tagColor) {
+                option.style.borderLeftColor = tagColor;
+            }
+        }
+
+        // Re-bind click events
+        var allTagOptions = tagsDropdown.querySelectorAll('.filter-option');
+        for (var m = 0; m < allTagOptions.length; m++) {
+            allTagOptions[m].addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                handleMultiSelectFilter(e.currentTarget, e.shiftKey);
+            });
+        }
+    }
+
+    function handleMultiSelectFilter(element, isShiftPressed) {
+        var filterType = element.getAttribute('data-filter');
+        var filterValue = element.getAttribute('data-value');
+
+        if (filterType === 'project') {
+            // Project remains single select
+            activeFilters[filterType] = filterValue;
+            updateProjectSelection();
+        } else if (filterType === 'priority' || filterType === 'tag') {
+            if (filterValue === '') {
+                // "All" option selected - clear all selections
+                activeFilters[filterType] = [];
+                updateMultiSelectDisplay(filterType);
+            } else if (isShiftPressed) {
+                // Multi-select mode
+                var currentSelections = activeFilters[filterType];
+                var index = currentSelections.indexOf(filterValue);
+
+                if (index > -1) {
+                    // Remove if already selected
+                    currentSelections.splice(index, 1);
+                } else {
+                    // Add if not selected
+                    currentSelections.push(filterValue);
+                }
+
+                updateMultiSelectDisplay(filterType);
+            } else {
+                // Single select mode (replace all selections)
+                activeFilters[filterType] = [filterValue];
+                updateMultiSelectDisplay(filterType);
+            }
+        }
+
+        updateActiveFiltersDisplay();
+        applyFilters();
+        if (!isShiftPressed) {
+            hideFilterDropdown();
+        }
+    }
+
+    function updateProjectSelection() {
+        // Update project filter visual selection
+        var projectOptions = document.querySelectorAll('#projectsFilterDropdown .filter-option');
+        for (var i = 0; i < projectOptions.length; i++) {
+            var option = projectOptions[i];
+            var value = option.getAttribute('data-value');
+            if (value === activeFilters.project) {
+                option.classList.add('selected');
+            } else {
+                option.classList.remove('selected');
+            }
+        }
+    }
+
+    function updateMultiSelectDisplay(filterType) {
+        var dropdownId = filterType === 'priority' ? '' : '#tagsFilterDropdown';
+        var selector = dropdownId ? dropdownId + ' .filter-option.multi-select' : '.filter-option.multi-select[data-filter="priority"]';
+        var options = document.querySelectorAll(selector);
+
+        for (var i = 0; i < options.length; i++) {
+            var option = options[i];
+            var value = option.getAttribute('data-value');
+
+            if (value === '') {
+                // "All" option
+                if (activeFilters[filterType].length === 0) {
+                    option.classList.add('selected');
+                } else {
+                    option.classList.remove('selected');
+                }
+            } else {
+                // Specific values
+                if (activeFilters[filterType].indexOf(value) > -1) {
+                    option.classList.add('selected');
+                } else {
+                    option.classList.remove('selected');
+                }
+            }
+        }
+    }
+
+    function getStatusFromColumnId(columnId) {
         console.log('getStatusFromColumnId called with:', columnId);
         switch(columnId) {
             case 'todoTasks': return 'ToDo';
@@ -1202,9 +1488,9 @@
         }
     }
 
-        var isDragging = false;
+    var isDragging = false;
 
-        function initializeDragAndDrop() {
+    function initializeDragAndDrop() {
         // Make all task containers sortable and connected
         $("#todoTasks, #inprogressTasks, #testingTasks, #doneTasks").sortable({
             connectWith: "#todoTasks, #inprogressTasks, #testingTasks, #doneTasks",
@@ -1253,9 +1539,8 @@
             }
         });
     }
-    
-// Helper function to get status from column ID
-        // Replace your existing getStatusFromColumn function with this improved version
+
+    // Replace your existing getStatusFromColumn function with this improved version
     function getStatusFromColumn(element) {
         console.log('getStatusFromColumn called with element:', element);
 
@@ -1336,8 +1621,7 @@
         });
     }
 
-    // Helper function to update column counts after drag
-        // Replace your existing updateColumnCounts function with this enhanced version
+    // Replace your existing updateColumnCounts function with this enhanced version
     function updateColumnCounts() {
         var columns = [
             { id: 'todoTasks', countId: 'todoCount' },
@@ -1381,20 +1665,26 @@
             applyFilters();
         });
 
-        // Filter functionality
+        // Filter functionality - Updated for multi-select
         var filterOptions = document.querySelectorAll('.filter-option');
         for (var i = 0; i < filterOptions.length; i++) {
             filterOptions[i].addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
 
-                var filterType = e.target.getAttribute('data-filter');
-                var filterValue = e.target.getAttribute('data-value');
+                // Check if this is a multi-select option
+                if (e.currentTarget.classList.contains('multi-select')) {
+                    handleMultiSelectFilter(e.currentTarget, e.shiftKey);
+                } else {
+                    // Handle single select (like projects)
+                    var filterType = e.currentTarget.getAttribute('data-filter');
+                    var filterValue = e.currentTarget.getAttribute('data-value');
 
-                activeFilters[filterType] = filterValue;
-                updateActiveFiltersDisplay();
-                applyFilters();
-                hideFilterDropdown();
+                    activeFilters[filterType] = filterValue;
+                    updateActiveFiltersDisplay();
+                    applyFilters();
+                    hideFilterDropdown();
+                }
             });
         }
 
@@ -1417,7 +1707,7 @@
             'ToDo': document.getElementById('todoTasks'),
             'InProgress': document.getElementById('inprogressTasks'),
             'Testing': document.getElementById('testingTasks'),
-            'Done': document.getElementById('doneTasks')  
+            'Done': document.getElementById('doneTasks')
         };
 
         // Clear all columns
@@ -1526,17 +1816,23 @@
 
         for (var i = 0; i < allTasks.length; i++) {
             var task = allTasks[i];
+
+            var matchesPriority = activeFilters.priority.length === 0 ||
+                activeFilters.priority.indexOf(task.priority) > -1;
+
             var matchesProject = !activeFilters.project ||
                 (task.project && task.project.name === activeFilters.project);
-            var matchesPriority = !activeFilters.priority ||
-                task.priority === activeFilters.priority;
-            var matchesStatus = !activeFilters.status ||
-                task.status === activeFilters.status;
+
+            var matchesTag = activeFilters.tag.length === 0 ||
+                (task.taskTags && task.taskTags.some(function(tt) {
+                    return tt.tag && activeFilters.tag.indexOf(tt.tag.name) > -1;
+                }));
+
             var matchesSearch = !activeFilters.search ||
                 task.title.toLowerCase().indexOf(activeFilters.search) !== -1 ||
                 (task.description && task.description.toLowerCase().indexOf(activeFilters.search) !== -1);
 
-            if (matchesProject && matchesPriority && matchesStatus && matchesSearch) {
+            if (matchesPriority && matchesProject && matchesTag && matchesSearch) {
                 filteredTasks.push(task);
             }
         }
@@ -1544,22 +1840,90 @@
         renderTasks();
     }
 
+    function clearAllFilters() {
+        activeFilters = {
+            priority: [],
+            project: '',
+            tag: [],
+            search: ''
+        };
+
+        // Clear search input
+        var searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.value = '';
+        }
+
+        // Update visual selections
+        updateMultiSelectDisplay('priority');
+        updateMultiSelectDisplay('tag');
+        updateProjectSelection();
+
+        updateActiveFiltersDisplay();
+        applyFilters();
+        hideFilterDropdown();
+    }
+
     function updateActiveFiltersDisplay() {
         var container = document.getElementById('activeFilters');
         container.innerHTML = '';
 
-        for (var type in activeFilters) {
-            var value = activeFilters[type];
-            if (value && type !== 'search') {
-                var tag = document.createElement('div');
-                tag.className = 'filter-tag';
-                tag.innerHTML = '<span>' + type + ': ' + value + '</span>' +
-                    '<span class="remove-filter" data-filter="' + type + '">×</span>';
-                container.appendChild(tag);
+        // Handle project filter (single value)
+        if (activeFilters.project) {
+            var projectTag = document.createElement('div');
+            projectTag.className = 'filter-tag';
+            projectTag.innerHTML = '<span>Project: ' + activeFilters.project + '</span>' +
+                '<span class="remove-filter" data-filter="project">×</span>';
+            container.appendChild(projectTag);
 
-                tag.querySelector('.remove-filter').addEventListener('click', function(e) {
-                    var filterType = e.target.getAttribute('data-filter');
-                    activeFilters[filterType] = '';
+            projectTag.querySelector('.remove-filter').addEventListener('click', function(e) {
+                activeFilters.project = '';
+                updateProjectSelection();
+                updateActiveFiltersDisplay();
+                applyFilters();
+            });
+        }
+
+        // Handle priority filters (multiple values)
+        if (activeFilters.priority.length > 0) {
+            for (var i = 0; i < activeFilters.priority.length; i++) {
+                var priority = activeFilters.priority[i];
+                var priorityTag = document.createElement('div');
+                priorityTag.className = 'filter-tag';
+                priorityTag.innerHTML = '<span>Priority: ' + priority + '</span>' +
+                    '<span class="remove-filter" data-filter="priority" data-value="' + priority + '">×</span>';
+                container.appendChild(priorityTag);
+
+                priorityTag.querySelector('.remove-filter').addEventListener('click', function(e) {
+                    var valueToRemove = e.target.getAttribute('data-value');
+                    var index = activeFilters.priority.indexOf(valueToRemove);
+                    if (index > -1) {
+                        activeFilters.priority.splice(index, 1);
+                    }
+                    updateMultiSelectDisplay('priority');
+                    updateActiveFiltersDisplay();
+                    applyFilters();
+                });
+            }
+        }
+
+        // Handle tag filters (multiple values)
+        if (activeFilters.tag.length > 0) {
+            for (var j = 0; j < activeFilters.tag.length; j++) {
+                var tag = activeFilters.tag[j];
+                var tagElement = document.createElement('div');
+                tagElement.className = 'filter-tag';
+                tagElement.innerHTML = '<span>Tag: ' + tag + '</span>' +
+                    '<span class="remove-filter" data-filter="tag" data-value="' + tag + '">×</span>';
+                container.appendChild(tagElement);
+
+                tagElement.querySelector('.remove-filter').addEventListener('click', function(e) {
+                    var valueToRemove = e.target.getAttribute('data-value');
+                    var index = activeFilters.tag.indexOf(valueToRemove);
+                    if (index > -1) {
+                        activeFilters.tag.splice(index, 1);
+                    }
+                    updateMultiSelectDisplay('tag');
                     updateActiveFiltersDisplay();
                     applyFilters();
                 });
@@ -1615,36 +1979,36 @@
         button.style.display = 'block';
     }
 
-            function createQuickTask(title, status, input, button) {
-                console.log('=== DEBUG CREATE QUICK TASK ===');
-                console.log('Title:', title);
-                console.log('Status:', status);
+    function createQuickTask(title, status, input, button) {
+        console.log('=== DEBUG CREATE QUICK TASK ===');
+        console.log('Title:', title);
+        console.log('Status:', status);
 
-                var defaultProject = userProjects.length > 0 ? userProjects[0] : null;
+        var defaultProject = userProjects.length > 0 ? userProjects[0] : null;
 
-                if (!defaultProject) {
-                    alert('No projects available. Please create a project first.');
-                    cancelCreateInput(input, button);
-                    return;
-                }
+        if (!defaultProject) {
+            alert('No projects available. Please create a project first.');
+            cancelCreateInput(input, button);
+            return;
+        }
 
-                // Convert status string to enum value
-                var statusValue;
-                switch(status) {
-                    case 'ToDo': statusValue = 0; break;
-                    case 'InProgress': statusValue = 1; break;
-                    case 'Testing': statusValue = 2; break;
-                    case 'Done': statusValue = 3; break;
-                    default: statusValue = 0; // Default to ToDo
-                }
+        // Convert status string to enum value
+        var statusValue;
+        switch(status) {
+            case 'ToDo': statusValue = 0; break;
+            case 'InProgress': statusValue = 1; break;
+            case 'Testing': statusValue = 2; break;
+            case 'Done': statusValue = 3; break;
+            default: statusValue = 0; // Default to ToDo
+        }
 
-                var taskData = {
-                    Title: title,
-                    ProjectId: defaultProject.id,
-                    Status: statusValue  // Send numeric value instead of string
-                };
+        var taskData = {
+            Title: title,
+            ProjectId: defaultProject.id,
+            Status: statusValue  // Send numeric value instead of string
+        };
 
-                console.log('Task data being sent:', taskData);
+        console.log('Task data being sent:', taskData);
 
         var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
 
@@ -1695,10 +2059,12 @@
 
     // Task details modal
     function openTaskDetails(taskId) {
-            // Prevent opening if we're dragging
-            if (isDragging) {
-                return false;
-            }
+        // Store the current task ID for timer functionality
+         window.currentTaskId = taskId;
+        // Prevent opening if we're dragging
+        if (isDragging) {
+            return false;
+        }
         // Show loading state
         document.getElementById('modalBodyContent').innerHTML = '<div class="text-center p-4"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
         document.getElementById('taskModal').classList.add('show');
@@ -1871,29 +2237,481 @@
             });
         }
     }
-
+        // Fixed Timer Implementation
     function setupTimerFunctionality() {
-        // Basic timer functionality - simplified for modal context
+        console.log('Setting up timer...');
+
+        // Initialize ALL timer variables to clean state
+        window.timerInterval = null;
+        window.timerStartTime = null;
+        window.currentSessionElapsed = 0; // Track current session time
+        window.isPaused = false;
+        window.accumulatedTime = 0; // Time from previous completed sessions
+
+        // Load existing timer state
+        loadTimerState();
+
         window.startTimer = function() {
-            console.log('Timer start functionality - implement as needed');
+            console.log('Starting timer...');
+
+            if (!window.timerInterval) {
+                // Start a new session
+                window.timerStartTime = Date.now();
+                window.currentSessionElapsed = 0; // Reset session counter
+                window.timerInterval = setInterval(updateTimer, 1000);
+                window.isPaused = false;
+
+                // Update UI immediately
+                updateTimerUI('running');
+                updateTimerDisplay(window.accumulatedTime);
+
+                // Save state
+                saveTimerState('running');
+            }
         };
 
         window.pauseTimer = function() {
-            console.log('Timer pause functionality - implement as needed');
+            if (window.timerInterval && !window.isPaused) {
+                // PAUSE: Stop the interval and save current progress
+                clearInterval(window.timerInterval);
+                window.timerInterval = null;
+
+                // Calculate and store the elapsed time for this session
+                if (window.timerStartTime) {
+                    window.currentSessionElapsed = Date.now() - window.timerStartTime;
+                }
+
+                window.isPaused = true;
+                window.timerStartTime = null; // Clear start time when paused
+
+                updateTimerUI('paused');
+                saveTimerState('paused');
+
+            } else if (window.isPaused) {
+                // RESUME: Start timer again but keep existing session time
+                window.timerStartTime = Date.now();
+                window.timerInterval = setInterval(updateTimer, 1000);
+                window.isPaused = false;
+
+                updateTimerUI('running');
+                saveTimerState('running');
+            }
         };
 
         window.stopTimer = function() {
-            console.log('Timer stop functionality - implement as needed');
-        };
+            console.log('Stopping timer...');
+            console.log('Current session elapsed:', window.currentSessionElapsed);
+            console.log('Accumulated time:', window.accumulatedTime);
 
-        window.resetTimer = function() {
-            console.log('Timer reset functionality - implement as needed');
+            // Calculate final session time
+            var finalSessionTime = window.currentSessionElapsed;
+            if (window.timerStartTime && window.timerInterval) {
+                // Timer was running - add time since last start
+                finalSessionTime += (Date.now() - window.timerStartTime);
+            }
+
+            // STOP the timer completely
+            if (window.timerInterval) {
+                clearInterval(window.timerInterval);
+                window.timerInterval = null;
+            }
+
+            // Add session time to accumulated total
+            window.accumulatedTime += finalSessionTime;
+
+            // Convert total time to time string for saving
+            var totalSeconds = Math.floor(finalSessionTime / 1000);
+            var hours = Math.floor(totalSeconds / 3600);
+            var minutes = Math.floor((totalSeconds % 3600) / 60);
+
+            var timeString;
+            if (hours > 0) {
+                timeString = hours + 'h ' + minutes + 'm';
+            } else if (minutes > 0) {
+                timeString = minutes + 'm';
+            } else {
+                timeString = '1m'; // Minimum 1 minute
+            }
+
+            console.log('Final session time:', finalSessionTime);
+            console.log('Time string for saving:', timeString);
+
+            // Reset current session variables
+            window.currentSessionElapsed = 0;
+            window.timerStartTime = null;
+            window.isPaused = false;
+
+            // Update UI with the session time that was just completed
+            updateTimerUI('stopped', finalSessionTime);
+
+            // Save the time entry and update state
+            saveTimerEntry(timeString, 'Timer session');
+            saveTimerState('stopped');
         };
 
         window.continueTimer = function() {
-            console.log('Timer continue functionality - implement as needed');
+            console.log('Continuing timer with accumulated time:', window.accumulatedTime);
+
+            // Reset session variables but keep accumulated time
+            window.currentSessionElapsed = 0;
+            window.timerStartTime = null;
+            window.isPaused = false;
+
+            // Start new session
+            window.startTimer();
         };
+
+        window.resetTimer = function() {
+            console.log('Resetting timer...');
+
+            // Stop everything
+            if (window.timerInterval) {
+                clearInterval(window.timerInterval);
+                window.timerInterval = null;
+            }
+
+            // Clear ALL time data
+            window.timerStartTime = null;
+            window.currentSessionElapsed = 0;
+            window.isPaused = false;
+            window.accumulatedTime = 0;
+
+            // Reset UI
+            updateTimerUI('reset');
+
+            // Clear saved state
+            clearTimerState();
+        };
+
+        // Timer update function - this runs every second when timer is active
+        function updateTimer() {
+            if (!window.timerStartTime) return;
+
+            // Calculate current session time: stored elapsed + time since current start
+            var currentRunTime = Date.now() - window.timerStartTime;
+            var totalCurrentSession = window.currentSessionElapsed + currentRunTime;
+
+            // Total time = accumulated from previous sessions + current session
+            var totalElapsed = window.accumulatedTime + totalCurrentSession;
+
+            updateTimerDisplay(totalElapsed);
+        }
     }
+
+    // Fixed save timer state function
+    function saveTimerState(status) {
+        var taskId = getCurrentTaskId();
+        if (!taskId) return;
+
+        // Calculate current session total for saving
+        var sessionTotal = window.currentSessionElapsed;
+        if (status === 'running' && window.timerStartTime) {
+            sessionTotal += (Date.now() - window.timerStartTime);
+        }
+
+        var timerData = {
+            taskId: taskId,
+            status: status,
+            sessionTime: sessionTotal, // Current session total
+            accumulatedTime: window.accumulatedTime || 0,
+            lastUpdated: new Date().toISOString()
+        };
+
+        console.log('Saving timer state:', timerData);
+
+        var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+        fetch('/Board/SaveTimerState', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': token
+            },
+            body: JSON.stringify(timerData)
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            if (data.success) {
+                console.log('Timer state saved successfully');
+            } else {
+                console.error('Failed to save timer state:', data.message);
+            }
+        })
+        .catch(function(error) {
+            console.error('Error saving timer state:', error);
+        });
+    }
+
+    // Fixed load timer state function
+    function loadTimerState() {
+        var taskId = getCurrentTaskId();
+        if (!taskId) return;
+
+        fetch('/Board/GetTimerState/' + taskId)
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success && data.timerState) {
+                    var state = data.timerState;
+                    console.log('Loading timer state:', state);
+
+                    // Restore accumulated time
+                    window.accumulatedTime = state.accumulatedTime || 0;
+
+                    if (state.status === 'running') {
+                        // Timer was running - restart it
+                        window.currentSessionElapsed = state.sessionTime || 0;
+                        window.timerStartTime = Date.now();
+                        window.timerInterval = setInterval(updateTimer, 1000);
+                        window.isPaused = false;
+
+                        // Display correct time immediately
+                        var totalElapsed = window.accumulatedTime + window.currentSessionElapsed;
+                        updateTimerDisplay(totalElapsed);
+                        updateTimerUI('running');
+
+                    } else if (state.status === 'paused') {
+                        // Timer was paused
+                        window.currentSessionElapsed = state.sessionTime || 0;
+                        window.isPaused = true;
+                        window.timerStartTime = null;
+
+                        var totalElapsed = window.accumulatedTime + window.currentSessionElapsed;
+                        updateTimerDisplay(totalElapsed);
+                        updateTimerUI('paused');
+
+                    } else if (state.status === 'stopped') {
+                        // Timer was stopped - show accumulated time only
+                        window.currentSessionElapsed = 0;
+                        window.timerStartTime = null;
+                        window.isPaused = false;
+
+                        updateTimerDisplay(window.accumulatedTime);
+                        updateTimerUI('stopped', 0);
+                    }
+                }
+            })
+            .catch(function(error) {
+                console.error('Error loading timer state:', error);
+            });
+    }
+
+    // Keep your existing updateTimerUI and updateTimerDisplay functions
+    function updateTimerUI(state, elapsed) {
+        var timerSection = document.getElementById('timerSection');
+        var btnStart = document.getElementById('btnStart');
+        var btnPause = document.getElementById('btnPause');
+        var btnStop = document.getElementById('btnStop');
+        var btnReset = document.getElementById('btnReset');
+        var btnContinue = document.getElementById('btnContinue');
+        var timerStatus = document.getElementById('timerStatus');
+        var timerStatusText = document.getElementById('timerStatusText');
+        var timerSavedMessage = document.getElementById('timerSavedMessage');
+        var pulseDot = document.getElementById('pulseDot');
+
+        switch(state) {
+            case 'running':
+                if (timerSection) timerSection.classList.add('active');
+                if (timerSection) timerSection.classList.remove('stopped');
+                if (btnStart) btnStart.style.display = 'none';
+                if (btnPause) {
+                    btnPause.style.display = 'inline-block';
+                    btnPause.innerHTML = '<i class="fas fa-pause me-2"></i>Pause';
+                }
+                if (btnStop) btnStop.style.display = 'inline-block';
+                if (btnReset) btnReset.style.display = 'inline-block';
+                if (btnContinue) btnContinue.style.display = 'none';
+                if (timerStatus) timerStatus.style.display = 'flex';
+                if (timerStatusText) timerStatusText.textContent = 'Timer is running';
+                if (timerSavedMessage) timerSavedMessage.style.display = 'none';
+                if (pulseDot) pulseDot.classList.remove('stopped');
+                break;
+
+            case 'paused':
+                if (btnPause) btnPause.innerHTML = '<i class="fas fa-play me-2"></i>Resume';
+                if (timerStatusText) timerStatusText.textContent = 'Timer is paused';
+                if (pulseDot) pulseDot.classList.add('stopped');
+                break;
+
+            case 'stopped':
+                if (elapsed > 0) {
+                    var hours = Math.floor(elapsed / (1000 * 60 * 60));
+                    var minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+                    var seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
+                    var savedTimeText = hours.toString().padStart(2, '0') + ':' +
+                                       minutes.toString().padStart(2, '0') + ':' +
+                                       seconds.toString().padStart(2, '0');
+
+                    var savedTimeElement = document.getElementById('savedTimeText');
+                    if (savedTimeElement) savedTimeElement.textContent = 'Time saved: ' + savedTimeText;
+                    if (timerSavedMessage) timerSavedMessage.style.display = 'flex';
+
+                    showNotification('Timer stopped - ' + savedTimeText + ' logged successfully!', 'success');
+                }
+
+                if (timerSection) timerSection.classList.remove('active');
+                if (timerSection) timerSection.classList.add('stopped');
+                if (btnPause) btnPause.style.display = 'none';
+                if (btnStop) btnStop.style.display = 'none';
+                if (btnReset) btnReset.style.display = 'inline-block';
+                if (btnContinue) btnContinue.style.display = 'inline-block';
+                if (timerStatus) timerStatus.style.display = 'none';
+                break;
+
+            case 'reset':
+                var mainTimerDisplay = document.getElementById('mainTimerDisplay');
+                if (mainTimerDisplay) mainTimerDisplay.textContent = '00:00:00';
+                if (timerSection) timerSection.classList.remove('active', 'stopped');
+                if (btnStart) btnStart.style.display = 'inline-block';
+                if (btnPause) {
+                    btnPause.style.display = 'none';
+                    btnPause.innerHTML = '<i class="fas fa-pause me-2"></i>Pause';
+                }
+                if (btnStop) btnStop.style.display = 'none';
+                if (btnReset) btnReset.style.display = 'none';
+                if (btnContinue) btnContinue.style.display = 'none';
+                if (timerStatus) timerStatus.style.display = 'none';
+                if (timerSavedMessage) timerSavedMessage.style.display = 'none';
+                if (pulseDot) pulseDot.classList.remove('stopped');
+                break;
+        }
+    }
+
+    // Timer display helper
+    function updateTimerDisplay(elapsed) {
+        var hours = Math.floor(elapsed / (1000 * 60 * 60));
+        var minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
+
+        var mainTimerDisplay = document.getElementById('mainTimerDisplay');
+        if (mainTimerDisplay) {
+            mainTimerDisplay.textContent =
+                hours.toString().padStart(2, '0') + ':' +
+                minutes.toString().padStart(2, '0') + ':' +
+                seconds.toString().padStart(2, '0');
+        }
+    }
+
+    function clearTimerState() {
+        var taskId = getCurrentTaskId();
+        if (!taskId) return;
+
+        var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+        fetch('/Board/ClearTimerState', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': token
+            },
+            body: JSON.stringify({ taskId: taskId })
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            if (data.success) {
+                console.log('Timer state cleared successfully');
+            }
+        })
+        .catch(function(error) {
+            console.error('Error clearing timer state:', error);
+        });
+    }
+
+            function saveTimerEntry(timeString, description) {
+        var taskId = getCurrentTaskId();
+        if (!taskId) {
+            console.error('No task ID found for timer entry');
+            return;
+        }
+
+        console.log('=== TIMER ENTRY DEBUG ===');
+        console.log('Time string passed:', timeString);
+
+        var duration = parseTimeString(timeString);
+        console.log('Parsed duration (minutes):', duration);
+
+        // CHANGE THIS: Allow 0 duration but reject negative or invalid values
+        if (duration < 0 || isNaN(duration)) {
+            console.error('Invalid time string for timer entry. Original string:', timeString);
+            return;
+        }
+
+        // For 0-minute entries, set a minimum of 1 minute
+        if (duration === 0) {
+            duration = 1; // Set minimum 1 minute for very short sessions
+            console.log('Duration was 0, setting to 1 minute minimum');
+        }
+
+        // Calculate start and end times
+        var endTime = new Date();
+        var startTime = new Date(endTime.getTime() - (duration * 60 * 1000));
+
+        console.log('Start time:', startTime);
+        console.log('End time:', endTime);
+        console.log('Final duration in minutes:', duration);
+
+        var timeEntryData = {
+            TaskId: taskId,
+            Duration: duration,
+            Description: description,
+            StartTime: startTime.toISOString(),
+            EndTime: endTime.toISOString()
+        };
+
+        var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+        fetch('/TimeEntries/Create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': token
+            },
+            body: JSON.stringify(timeEntryData)
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            if (data.success) {
+                console.log('Timer entry saved successfully');
+                loadTaskActivities(taskId);
+            } else {
+                console.error('Failed to save timer entry:', data.message);
+            }
+        })
+        .catch(function(error) {
+            console.error('Error saving timer entry:', error);
+        });
+    }
+
+       function getCurrentTaskId() {
+        console.log('getCurrentTaskId called, window.currentTaskId is:', window.currentTaskId);
+
+        if (window.currentTaskId) {
+            return window.currentTaskId;
+        }
+
+        // Fallback: try to get it from the modal content
+        var modalContent = document.getElementById('modalBodyContent');
+        if (modalContent) {
+            // Try to find the task ID in the modal content
+            var taskElement = modalContent.querySelector('[data-task-id]');
+            if (taskElement) {
+                var taskId = taskElement.getAttribute('data-task-id');
+                console.log('Found task ID in modal content:', taskId);
+                return taskId;
+            }
+        }
+
+        console.error('No task ID found anywhere!');
+        return null;
+    }
+
 
     function loadTaskActivities(taskId) {
         var activityList = document.querySelector('#activityList');
@@ -2037,8 +2855,13 @@
     }
 
     // Helper function for time parsing
-    function parseTimeString(timeStr) {
-        if (!timeStr) return 0;
+        function parseTimeString(timeStr) {
+        console.log('parseTimeString called with:', timeStr);
+
+        if (!timeStr) {
+            console.log('Empty time string');
+            return 0;
+        }
 
         var totalMinutes = 0;
         var regex = /(\d+\.?\d*)([wdhm])/g;
@@ -2047,6 +2870,8 @@
         while ((match = regex.exec(timeStr)) !== null) {
             var value = parseFloat(match[1]);
             var unit = match[2];
+
+            console.log('Found match:', value, unit);
 
             switch (unit) {
                 case 'w':
@@ -2064,6 +2889,7 @@
             }
         }
 
+        console.log('Total minutes calculated:', Math.round(totalMinutes));
         return Math.round(totalMinutes);
     }
 
@@ -2108,4 +2934,3 @@
     document.head.appendChild(styleElement);
 </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>

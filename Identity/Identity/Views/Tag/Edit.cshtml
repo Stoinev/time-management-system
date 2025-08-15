@@ -1,77 +1,554 @@
 ﻿@model Identity.Models.Tag
-
 @{
     ViewData["Title"] = "Edit Tag";
 }
 
-<h1>Edit Tag</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - @Model.Name</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .edit-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            padding: 32px;
+            margin: 20px auto;
+            max-width: 700px;
+        }
 
-<hr />
-<div class="row">
-    <div class="col-md-6">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+        .edit-header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+        }
 
-            <div class="mb-3">
-                <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
+        .edit-icon {
+            font-size: 48px;
+            color: #667eea;
+            margin-bottom: 16px;
+        }
 
-            <div class="mb-3">
-                <label asp-for="ColorCode" class="form-label">Color</label>
-                <div class="input-group">
-                    <input asp-for="ColorCode" type="color" class="form-control form-control-color" style="max-width: 100px;" />
-                    <input asp-for="ColorCode" type="text" class="form-control" placeholder="#FF0000" readonly />
+        .edit-title {
+            color: #2c3e50;
+            font-weight: 700;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .edit-subtitle {
+            color: #6c757d;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            color: #495057;
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+            .form-control:focus {
+                outline: none;
+                border-color: #667eea;
+                box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+                background: white;
+            }
+
+            .form-control::placeholder {
+                color: #adb5bd;
+                font-style: italic;
+            }
+
+        .color-picker-group {
+            display: flex;
+            gap: 12px;
+            align-items: stretch;
+        }
+
+        .color-picker-wrapper {
+            position: relative;
+            width: 80px;
+        }
+
+        .color-picker {
+            width: 100%;
+            height: 50px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+
+            .color-picker:hover {
+                transform: scale(1.05);
+                border-color: #667eea;
+            }
+
+        .color-text-input {
+            flex: 1;
+            font-family: 'Courier New', monospace;
+            text-transform: uppercase;
+        }
+
+        .preview-section {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .preview-title {
+            color: #495057;
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tag-preview {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .tag-preview::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transition: left 0.5s;
+            }
+
+            .tag-preview:hover::before {
+                left: 100%;
+            }
+
+        .validation-error {
+            color: #dc3545;
+            font-size: 13px;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .help-text {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 32px;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .btn-save::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transition: left 0.5s;
+            }
+
+            .btn-save:hover::before {
+                left: 100%;
+            }
+
+            .btn-save:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+                color: white;
+            }
+
+        .btn-cancel {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            border: none;
+            color: white;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(108, 117, 125, 0.3);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .btn-cancel:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+                color: white;
+                text-decoration: none;
+            }
+
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @@keyframes slideIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .required-field::after {
+            content: ' *';
+            color: #dc3545;
+        }
+
+        .color-suggestions {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+            padding: 16px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .color-suggestion {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+            .color-suggestion:hover {
+                transform: scale(1.2);
+                border-color: #667eea;
+            }
+
+        .usage-stats {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .stats-title {
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stats-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0d47a1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="edit-card slide-in">
+            <div class="edit-header">
+                <div class="edit-icon">
+                    <i class="fas fa-tag"></i>
                 </div>
-                <span asp-validation-for="ColorCode" class="text-danger"></span>
+                <h2 class="edit-title">Edit Tag</h2>
+                <p class="edit-subtitle">Update your tag information and styling</p>
             </div>
 
-            <div class="mb-3">
-                <label>Preview</label>
-                <div>
-                    <span id="tagPreview" class="badge fs-6" style="padding: 8px 16px;">
-                        @Model.Name
-                    </span>
+            <form asp-action="Edit" method="post" id="editForm" novalidate>
+                <input type="hidden" asp-for="Id" />
+
+               <!-- <div class="usage-stats">
+                    <div class="stats-title">
+                        <i class="fas fa-chart-bar"></i>
+                        Tag Usage
+                    </div>
+                    <div class="stats-value" id="usageCount">Loading...</div>
+                    <small class="text-muted">tasks using this tag</small>
+                 </div>-->
+
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-info-circle"></i>
+                        Tag Information
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Name" class="form-label required-field">
+                            <i class="fas fa-signature"></i>
+                            Tag Name
+                        </label>
+                        <input asp-for="Name" class="form-control" placeholder="Enter tag name" maxlength="50" id="tagName" />
+                        <!--<span asp-validation-for="Name" class="validation-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </span>-->
+                        <div class="help-text">
+                            <i class="fas fa-info-circle"></i>
+                            Choose a short, descriptive name for your tag
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="ColorCode" class="form-label required-field">
+                            <i class="fas fa-palette"></i>
+                            Tag Color
+                        </label>
+                        <div class="color-picker-group">
+                            <div class="color-picker-wrapper">
+                                <input asp-for="ColorCode" type="color" class="color-picker" id="colorPicker" />
+                            </div>
+                            <input asp-for="ColorCode" type="text" class="form-control color-text-input"
+                                   placeholder="#FF0000" id="colorText" maxlength="7" />
+                        </div>
+                        <!--<span asp-validation-for="ColorCode" class="validation-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </span>-->
+                        <div class="help-text">
+                            <i class="fas fa-lightbulb"></i>
+                            Choose a color that represents this tag's category
+                        </div>
+
+                        <!-- Color Suggestions -->
+                        <div class="color-suggestions">
+                            <div class="color-suggestion" style="background: #e53e3e" data-color="#e53e3e"></div>
+                            <div class="color-suggestion" style="background: #dd6b20" data-color="#dd6b20"></div>
+                            <div class="color-suggestion" style="background: #d69e2e" data-color="#d69e2e"></div>
+                            <div class="color-suggestion" style="background: #38a169" data-color="#38a169"></div>
+                            <div class="color-suggestion" style="background: #319795" data-color="#319795"></div>
+                            <div class="color-suggestion" style="background: #3182ce" data-color="#3182ce"></div>
+                            <div class="color-suggestion" style="background: #805ad5" data-color="#805ad5"></div>
+                            <div class="color-suggestion" style="background: #d53f8c" data-color="#d53f8c"></div>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="mb-3">
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
+                <div class="preview-section">
+                    <div class="preview-title">
+                        <i class="fas fa-eye"></i>
+                        Live Preview
+                    </div>
+                    <div class="tag-preview" id="tagPreview">
+                        <i class="fas fa-tag"></i>
+                        <span id="previewText">@Model.Name</span>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button type="submit" class="btn-save" id="saveBtn">
+                        <i class="fas fa-save me-2"></i>
+                        Save Changes
+                    </button>
+                    <a asp-action="Index" class="btn-cancel">
+                        <i class="fas fa-times me-2"></i>
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
-@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Same script as Create view
         document.addEventListener('DOMContentLoaded', function() {
-            const colorPicker = document.querySelector('input[type="color"]');
-            const colorText = document.querySelector('input[type="text"][name="ColorCode"]');
+            const colorPicker = document.getElementById('colorPicker');
+            const colorText = document.getElementById('colorText');
+            const tagName = document.getElementById('tagName');
             const preview = document.getElementById('tagPreview');
+            const previewText = document.getElementById('previewText');
+            const form = document.getElementById('editForm');
+            const saveBtn = document.getElementById('saveBtn');
+
+            // Load usage statistics
+            loadUsageStats();
 
             function updatePreview() {
                 const color = colorPicker.value;
+                const name = tagName.value || 'Sample Tag';
+
                 colorText.value = color.toUpperCase();
                 preview.style.backgroundColor = color;
+                previewText.textContent = name;
 
+                // Calculate text color based on background brightness
                 const rgb = parseInt(color.slice(1), 16);
                 const r = (rgb >> 16) & 0xff;
                 const g = (rgb >> 8) & 0xff;
                 const b = rgb & 0xff;
                 const brightness = (r * 299 + g * 587 + b * 114) / 1000;
                 preview.style.color = brightness > 128 ? '#000000' : '#FFFFFF';
-
-                preview.textContent = document.querySelector('input[name="Name"]').value || 'Sample Tag';
             }
 
-            colorPicker.addEventListener('input', updatePreview);
-            document.querySelector('input[name="Name"]').addEventListener('input', updatePreview);
+            function loadUsageStats() {
+                // Simulate API call to get usage statistics
+                setTimeout(() => {
+                    const usageCount = Math.floor(Math.random() * 50); // Replace with actual API call
+                    document.getElementById('usageCount').textContent = usageCount;
+                }, 500);
+            }
 
+            // Event listeners
+            colorPicker.addEventListener('input', updatePreview);
+            tagName.addEventListener('input', updatePreview);
+
+            // Color text input validation
+            colorText.addEventListener('input', function() {
+                let value = this.value.toUpperCase();
+                if (!value.startsWith('#')) {
+                    value = '#' + value;
+                }
+                if (/^#[0-9A-F]{6}$/i.test(value)) {
+                    colorPicker.value = value;
+                    updatePreview();
+                }
+                this.value = value;
+            });
+
+            // Color suggestions
+            document.querySelectorAll('.color-suggestion').forEach(suggestion => {
+                suggestion.addEventListener('click', function() {
+                    const color = this.dataset.color;
+                    colorPicker.value = color;
+                    colorText.value = color.toUpperCase();
+                    updatePreview();
+                });
+            });
+
+            // Form validation
+            form.addEventListener('submit', function(e) {
+                // Add loading state
+                const originalText = saveBtn.innerHTML;
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+                saveBtn.disabled = true;
+
+                // Basic validation
+                if (!tagName.value.trim()) {
+                    e.preventDefault();
+                    alert('Tag name is required');
+                    saveBtn.innerHTML = originalText;
+                    saveBtn.disabled = false;
+                    tagName.focus();
+                    return;
+                }
+
+                if (!/^#[0-9A-F]{6}$/i.test(colorText.value)) {
+                    e.preventDefault();
+                    alert('Please enter a valid color code (e.g., #FF0000)');
+                    saveBtn.innerHTML = originalText;
+                    saveBtn.disabled = false;
+                    colorText.focus();
+                    return;
+                }
+
+                // If validation passes, form will submit normally
+                // Loading state will remain until page redirect
+            });
+
+            // Initial preview update
             updatePreview();
+
+            // Add entrance animation
+            const card = document.querySelector('.edit-card');
+            card.style.transform = 'translateY(20px)';
+            card.style.opacity = '0';
+
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s ease-out';
+                card.style.transform = 'translateY(0)';
+                card.style.opacity = '1';
+            }, 100);
         });
     </script>
-}
+</body>
+</html>

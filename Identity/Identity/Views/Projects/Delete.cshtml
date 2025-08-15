@@ -3,26 +3,386 @@
     ViewData["Title"] = "Delete Project";
 }
 
-<h2 class="text-danger">Delete Project</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - @Model.Name</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .delete-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            padding: 32px;
+            margin: 20px auto;
+            max-width: 600px;
+            border: 2px solid rgba(220, 53, 69, 0.1);
+        }
 
-<div class="alert alert-warning">
-    Are you sure you want to delete the project:
-    <strong>@Model.Name</strong>?
-</div>
+        .delete-header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid rgba(220, 53, 69, 0.1);
+        }
 
-<dl class="row">
-    <dt class="col-sm-2">Description</dt>
-    <dd class="col-sm-10">@Model.Description</dd>
+        .delete-icon {
+            font-size: 64px;
+            color: #dc3545;
+            margin-bottom: 16px;
+            animation: pulse 2s infinite;
+        }
 
-    <dt class="col-sm-2">Created By</dt>
-    <dd class="col-sm-10">@Model.CreatedBy?.UserName</dd>
+        @@keyframes pulse {
+            0%
 
-    <dt class="col-sm-2">Created Date</dt>
-    <dd class="col-sm-10">@Model.CreatedDate.ToString("yyyy-MM-dd")</dd>
-</dl>
+        {
+            transform: scale(1);
+        }
 
-<form asp-action="Delete" method="post">
-    <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger">Yes, delete</button>
-    <a asp-action="Manage" class="btn btn-secondary">Cancel</a>
-</form>
+        50% {
+            transform: scale(1.05);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+
+        }
+
+        .delete-title {
+            color: #dc3545;
+            font-weight: 700;
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        .warning-message {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .warning-message::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg, #ffc107, #fd7e14, #ffc107);
+                animation: shimmer 2s infinite;
+            }
+
+        @@keyframes shimmer {
+            0%
+
+        {
+            transform: translateX(-100%);
+        }
+
+        100% {
+            transform: translateX(100%);
+        }
+
+        }
+
+        .warning-icon {
+            font-size: 24px;
+            color: #856404;
+            margin-right: 12px;
+        }
+
+        .warning-text {
+            color: #856404;
+            font-weight: 600;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .project-name {
+            color: #dc3545;
+            font-weight: 700;
+            font-size: 18px;
+            background: linear-gradient(135deg, #ffe6e6 0%, #ffcccc 100%);
+            padding: 8px 16px;
+            border-radius: 8px;
+            display: inline-block;
+            margin: 8px 0;
+        }
+
+        .project-details {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+            .detail-row:last-child {
+                margin-bottom: 0;
+                padding-bottom: 0;
+                border-bottom: none;
+            }
+
+        .detail-label {
+            font-weight: 600;
+            color: #495057;
+            min-width: 120px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-value {
+            color: #6c757d;
+            flex: 1;
+            font-size: 15px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 32px;
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            border: none;
+            color: white;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(220, 53, 69, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .btn-delete::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transition: left 0.5s;
+            }
+
+            .btn-delete:hover::before {
+                left: 100%;
+            }
+
+            .btn-delete:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+                color: white;
+            }
+
+        .btn-cancel {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            border: none;
+            color: white;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(108, 117, 125, 0.3);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .btn-cancel:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+                color: white;
+                text-decoration: none;
+            }
+
+        .consequences-section {
+            background: linear-gradient(135deg, #f8d7da 0%, #f1c2c7 100%);
+            border: 1px solid #dc3545;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+
+        .consequences-title {
+            color: #721c24;
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .consequences-list {
+            color: #721c24;
+            margin: 0;
+            padding-left: 20px;
+        }
+
+            .consequences-list li {
+                margin-bottom: 8px;
+            }
+
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @@keyframes slideIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="delete-card slide-in">
+            <div class="delete-header">
+                <div class="delete-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h2 class="delete-title">Delete Project</h2>
+                <p class="text-muted">This action cannot be undone</p>
+            </div>
+
+            <div class="warning-message">
+                <i class="fas fa-exclamation-triangle warning-icon"></i>
+                <p class="warning-text">
+                    Are you sure you want to delete the project
+                    <span class="project-name">@Model.Name</span>?
+                </p>
+            </div>
+
+            <div class="consequences-section">
+                <div class="consequences-title">
+                    <i class="fas fa-exclamation-circle"></i>
+                    What will happen when you delete this project:
+                </div>
+                <ul class="consequences-list">
+                    <li>All tasks associated with this project will be updated</li>
+                    <li>Project history and statistics will be lost</li>
+                    <li>This action is permanent and cannot be reversed</li>
+                    <li>Team members will lose access to project-specific data</li>
+                </ul>
+            </div>
+
+            <div class="project-details">
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-align-left"></i>
+                        Description:
+                    </div>
+                    <div class="detail-value">@(Model.Description ?? "No description provided")</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-user"></i>
+                        Created By:
+                    </div>
+                    <div class="detail-value">@(Model.CreatedBy?.UserName ?? "Unknown")</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-calendar"></i>
+                        Created Date:
+                    </div>
+                    <div class="detail-value">@Model.CreatedDate.ToString("MMMM dd, yyyy 'at' HH:mm")</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-@(Model.IsActive ? "check-circle" : "times-circle")"></i>
+                        Status:
+                    </div>
+                    <div class="detail-value">
+                        <span class="badge @(Model.IsActive ? "bg-success" : "bg-secondary")">
+                            @(Model.IsActive ? "Active" : "Inactive")
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <form asp-action="Delete" method="post" id="deleteForm">
+                <input type="hidden" asp-for="Id" />
+                <div class="action-buttons">
+                    <button type="button" class="btn-delete" onclick="confirmDelete()">
+                        <i class="fas fa-trash-alt me-2"></i>
+                        Yes, Delete Project
+                    </button>
+                    <a asp-action="Manage" class="btn-cancel">
+                        <i class="fas fa-times me-2"></i>
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function confirmDelete() {
+            const projectName = '@Html.Raw(Model.Name.Replace("'", "\\'"))';
+
+            // Show final confirmation
+            if (confirm(`Are you absolutely sure you want to delete "${projectName}"?\n\nThis action cannot be undone!`)) {
+                // Add loading state
+                const deleteBtn = document.querySelector('.btn-delete');
+                const originalText = deleteBtn.innerHTML;
+                deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Deleting...';
+                deleteBtn.disabled = true;
+
+                // Submit the form
+                document.getElementById('deleteForm').submit();
+            }
+        }
+
+        // Add entrance animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const card = document.querySelector('.delete-card');
+            card.style.transform = 'translateY(20px)';
+            card.style.opacity = '0';
+
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s ease-out';
+                card.style.transform = 'translateY(0)';
+                card.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>

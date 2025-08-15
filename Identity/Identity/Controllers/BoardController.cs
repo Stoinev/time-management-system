@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Identity.Areas.Identity.Data;
 using Identity.Data;
 using Identity.Models;
-using Identity.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace Identity.Controllers
 {
@@ -81,35 +82,63 @@ namespace Identity.Controllers
 
             return View(taskDtos);
         }
+        [HttpPost]
+        public async Task<IActionResult> SaveTimerState([FromBody] TimerStateModel timerData)
+        {
+            try
+            {
+                // Save timer state to database (you'll need to create a TimerState table/entity)
+                // This is a simple in-memory approach - replace with actual database storage
 
-        /* [HttpPost]
-         public async Task<IActionResult> CreateQuickTask([FromBody] QuickTaskModel model)
-         {
-             try
-             {
-                 var userId = _userManager.GetUserId(User);
+                // For now, you could use TempData or Session, but ideally create a TimerState entity
+                HttpContext.Session.SetString($"timer_state_{timerData.TaskId}",
+                    JsonSerializer.Serialize(timerData));
 
-                 var task = new TaskItem
-                 {
-                     Title = model.Title,
-                     ProjectId = model.ProjectId ?? await GetDefaultProjectId(userId),
-                     Status = model.Status,
-                     Priority = TaskPriority.Low,
-                     CreatedById = userId,
-                     CreatedDate = DateTime.Now,
-                     UpdatedDate = DateTime.Now
-                 };
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
 
-                 _context.Tasks.Add(task);
-                 await _context.SaveChangesAsync();
+        [HttpGet]
+        public async Task<IActionResult> GetTimerState(int taskId)
+        {
+            try
+            {
+                var stateJson = HttpContext.Session.GetString($"timer_state_{taskId}");
 
-                 return Json(new { success = true, taskId = task.Id });
-             }
-             catch (Exception ex)
-             {
-                 return Json(new { success = false, message = ex.Message });
-             }
-         }*/
+                if (!string.IsNullOrEmpty(stateJson))
+                {
+                    var timerState = JsonSerializer.Deserialize<TimerStateModel>(stateJson);
+                    return Json(new { success = true, timerState = timerState });
+                }
+
+                return Json(new { success = true, timerState = (object)null });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ClearTimerState([FromBody] object data)
+        {
+            try
+            {
+                var taskId = ((JsonElement)data).GetProperty("taskId").GetInt32();
+                HttpContext.Session.Remove($"timer_state_{taskId}");
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateQuickTask([FromBody] QuickTaskModel model)
         {

@@ -1,29 +1,361 @@
 ﻿@model Identity.Models.Project
-
 @{
     ViewData["Title"] = "Create Project";
 }
 
-<h2>Create Project</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .create-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            padding: 32px;
+            margin: 20px auto;
+            max-width: 600px;
+        }
 
-<form asp-action="Create" method="post">
-    @Html.AntiForgeryToken()
+        .create-header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+        }
 
-    <div class="mb-3">
-        <label asp-for="Name" class="form-label"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+        .create-icon {
+            font-size: 48px;
+            color: #667eea;
+            margin-bottom: 16px;
+        }
+
+        .create-title {
+            color: #2c3e50;
+            font-weight: 700;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .create-subtitle {
+            color: #6c757d;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            color: #495057;
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+            .form-control:focus {
+                outline: none;
+                border-color: #667eea;
+                box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+                background: white;
+            }
+
+            .form-control::placeholder {
+                color: #adb5bd;
+                font-style: italic;
+            }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .character-count {
+            font-size: 12px;
+            color: #6c757d;
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .validation-error {
+            color: #dc3545;
+            font-size: 13px;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .help-text {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 32px;
+        }
+
+        .btn-create {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .btn-create::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transition: left 0.5s;
+            }
+
+            .btn-create:hover::before {
+                left: 100%;
+            }
+
+            .btn-create:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+                color: white;
+            }
+
+        .btn-cancel {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            border: none;
+            color: white;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(108, 117, 125, 0.3);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .btn-cancel:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+                color: white;
+                text-decoration: none;
+            }
+
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @@keyframes slideIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .required-field::after {
+            content: ' *';
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="create-card slide-in">
+            <div class="create-header">
+                <div class="create-icon">
+                    <i class="fas fa-folder-plus"></i>
+                </div>
+                <h2 class="create-title">Create New Project</h2>
+                <p class="create-subtitle">Set up a new project to organize your tasks</p>
+            </div>
+
+            <form asp-action="Create" method="post" id="createForm" novalidate>
+                @Html.AntiForgeryToken()
+
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-info-circle"></i>
+                        Project Information
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Name" class="form-label required-field">
+                            <i class="fas fa-folder-open"></i>
+                            Project Name
+                        </label>
+                        <input asp-for="Name" class="form-control" placeholder="Enter project name" maxlength="100" />
+                        <!--<span asp-validation-for="Name" class="validation-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </span>-->
+                        <div class="help-text">
+                            <i class="fas fa-info-circle"></i>
+                            Choose a descriptive name for your project
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Description" class="form-label">
+                            <i class="fas fa-align-left"></i>
+                            Description
+                        </label>
+                        <textarea asp-for="Description" class="form-control"
+                                  placeholder="Describe your project goals, objectives, and key details..."
+                                  maxlength="500" id="descriptionField"></textarea>
+                        <!--<span asp-validation-for="Description" class="validation-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </span>-->
+                        <div class="character-count">
+                            <span id="charCount">0</span> / 500 characters
+                        </div>
+                        <div class="help-text">
+                            <i class="fas fa-lightbulb"></i>
+                            A good description helps team members understand the project's purpose
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button type="submit" class="btn-create" id="createBtn">
+                        <i class="fas fa-plus me-2"></i>
+                        Create Project
+                    </button>
+                    <a asp-action="Manage" class="btn-cancel">
+                        <i class="fas fa-times me-2"></i>
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <div class="mb-3">
-        <label asp-for="Description" class="form-label"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('createForm');
+            const createBtn = document.getElementById('createBtn');
+            const descriptionField = document.getElementById('descriptionField');
+            const charCount = document.getElementById('charCount');
 
-    <button type="submit" class="btn btn-primary">Create</button>
-    <a asp-action="Manage" class="btn btn-secondary">Cancel</a>
-</form>
+            // Character counter for description
+            function updateCharCount() {
+                const count = descriptionField.value.length;
+                charCount.textContent = count;
+
+                if (count > 450) {
+                    charCount.style.color = '#dc3545';
+                } else if (count > 400) {
+                    charCount.style.color = '#ffc107';
+                } else {
+                    charCount.style.color = '#6c757d';
+                }
+            }
+
+            descriptionField.addEventListener('input', updateCharCount);
+            updateCharCount(); // Initial count
+
+            // Form validation
+            form.addEventListener('submit', function(e) {
+                // Add loading state
+                const originalText = createBtn.innerHTML;
+                createBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating...';
+                createBtn.disabled = true;
+
+                // Basic validation
+                const nameField = document.querySelector('[name="Name"]');
+                if (!nameField.value.trim()) {
+                    e.preventDefault();
+                    alert('Project name is required');
+                    createBtn.innerHTML = originalText;
+                    createBtn.disabled = false;
+                    nameField.focus();
+                    return;
+                }
+
+                // If validation passes, form will submit normally
+                // Loading state will remain until page redirect
+            });
+
+            // Add entrance animation
+            const card = document.querySelector('.create-card');
+            card.style.transform = 'translateY(20px)';
+            card.style.opacity = '0';
+
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s ease-out';
+                card.style.transform = 'translateY(0)';
+                card.style.opacity = '1';
+            }, 100);
+
+            // Auto-resize textarea
+            descriptionField.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 200) + 'px';
+            });
+        });
+    </script>
+</body>
+</html>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

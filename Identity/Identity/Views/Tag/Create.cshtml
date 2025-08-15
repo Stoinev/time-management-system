@@ -1,77 +1,749 @@
 ﻿@model Identity.Models.Tag
-
 @{
     ViewData["Title"] = "Create Tag";
 }
 
-<h1>Create New Tag</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
 
-<hr />
-<div class="row">
-    <div class="col-md-6">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        .create-tag-container {
+            padding: 40px 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-            <div class="mb-3">
-                <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control" placeholder="Enter tag name" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
+        .create-tag-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            margin: 20px auto;
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
 
-            <div class="mb-3">
-                <label asp-for="ColorCode" class="form-label">Color</label>
-                <div class="input-group">
-                    <input asp-for="ColorCode" type="color" class="form-control form-control-color" style="max-width: 100px;" />
-                    <input asp-for="ColorCode" type="text" class="form-control" placeholder="#FF0000" readonly />
-                </div>
-                <span asp-validation-for="ColorCode" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label>Preview</label>
-                <div>
-                    <span id="tagPreview" class="badge fs-6" style="padding: 8px 16px;">
-                        Sample Tag
-                    </span>
-                </div>
-            </div>
-
-            <div class="mb-3">
-                <button type="submit" class="btn btn-primary">Create</button>
-                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
-    </div>
-</div>
-
-@section Scripts {
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const colorPicker = document.querySelector('input[type="color"]');
-            const colorText = document.querySelector('input[type="text"][name="ColorCode"]');
-            const preview = document.getElementById('tagPreview');
-
-            function updatePreview() {
-                const color = colorPicker.value;
-                colorText.value = color.toUpperCase();
-                preview.style.backgroundColor = color;
-
-                // Calculate text color for contrast
-                const rgb = parseInt(color.slice(1), 16);
-                const r = (rgb >> 16) & 0xff;
-                const g = (rgb >> 8) & 0xff;
-                const b = rgb & 0xff;
-                const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-                preview.style.color = brightness > 128 ? '#000000' : '#FFFFFF';
-
-                preview.textContent = document.querySelector('input[name="Name"]').value || 'Sample Tag';
+            .create-tag-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             }
 
-            colorPicker.addEventListener('input', updatePreview);
-            document.querySelector('input[name="Name"]').addEventListener('input', updatePreview);
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
 
-            // Initial preview
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .page-subtitle {
+            color: #6c757d;
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .form-group {
+            margin-bottom: 28px;
+            position: relative;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .required-field::after {
+            content: ' *';
+            color: #dc3545;
+        }
+
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        }
+
+            .form-control:focus {
+                outline: none;
+                border-color: #667eea;
+                box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+                background: white;
+                transform: translateY(-1px);
+            }
+
+            .form-control:hover {
+                border-color: #dee2e6;
+                background: white;
+            }
+
+            .form-control.is-invalid {
+                border-color: #dc3545;
+                box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+            }
+
+            .form-control.is-valid {
+                border-color: #28a745;
+                box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+            }
+
+        .text-danger {
+            color: #dc3545 !important;
+            font-size: 13px;
+            font-weight: 500;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .text-danger::before {
+                content: '\f071';
+                font-family: 'Font Awesome 6 Free';
+                font-weight: 900;
+            }
+
+        /* Color Picker Styles */
+        .color-picker-group {
+            display: flex;
+            gap: 12px;
+            align-items: stretch;
+        }
+
+        .form-control-color {
+            width: 80px;
+            height: 56px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .form-control-color::-webkit-color-swatch-wrapper {
+                padding: 0;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+            .form-control-color::-webkit-color-swatch {
+                border: none;
+                border-radius: 8px;
+            }
+
+            .form-control-color:focus {
+                border-color: #667eea;
+                box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            }
+
+        .color-text-input {
+            flex: 1;
+            font-family: 'Courier New', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Tag Preview Styles */
+        .preview-section {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e3e8ff 100%);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .preview-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 16px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tag-preview {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transform: scale(1);
+            animation: preview-pulse 2s infinite ease-in-out;
+        }
+
+        @@keyframes preview-pulse {
+            0%, 100%
+
+        {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+
+        }
+
+        .color-info {
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        .color-info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+            .color-info-item:last-child {
+                margin-bottom: 0;
+            }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            gap: 16px;
+            margin-top: 40px;
+            padding-top: 32px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 140px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+                color: white;
+            }
+
+            .btn-primary:active {
+                transform: translateY(0);
+            }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 2px solid #e9ecef;
+        }
+
+            .btn-secondary:hover {
+                background: #e9ecef;
+                color: #495057;
+                border-color: #dee2e6;
+                transform: translateY(-1px);
+            }
+
+        /* Help text */
+        .help-text {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Loading state */
+        .btn.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+            .btn.loading .btn-text {
+                opacity: 0;
+            }
+
+            .btn.loading::after {
+                content: '';
+                position: absolute;
+                width: 20px;
+                height: 20px;
+                border: 2px solid transparent;
+                border-top-color: currentColor;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+
+        @@keyframes spin {
+            to
+
+        {
+            transform: rotate(360deg);
+        }
+
+        }
+
+        /* Character counter */
+        .char-counter {
+            position: absolute;
+            bottom: -24px;
+            right: 0;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+            .char-counter.warning {
+                color: #ffc107;
+            }
+
+            .char-counter.danger {
+                color: #dc3545;
+            }
+
+        /* Responsive */
+        @@media (max-width: 576px) {
+            .create-tag-card
+
+        {
+            margin: 10px;
+            padding: 24px;
+            border-radius: 12px;
+        }
+
+        .page-title {
+            font-size: 28px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+
+        .color-picker-group {
+            flex-direction: column;
+        }
+
+        .form-control-color {
+            width: 100%;
+        }
+
+        }
+
+        /* Focus ring for accessibility */
+        .btn:focus {
+            outline: 3px solid rgba(102, 126, 234, 0.5);
+            outline-offset: 2px;
+        }
+
+        .btn-secondary:focus {
+            outline: 3px solid rgba(108, 117, 125, 0.5);
+        }
+
+        /* Input icon */
+        .input-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            pointer-events: none;
+            font-size: 16px;
+        }
+
+        .form-group.has-icon .form-control {
+            padding-right: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="create-tag-container">
+        <div class="create-tag-card">
+            <div class="page-header">
+                <h1 class="page-title">
+                    <i class="fas fa-tags"></i>
+                    Create New Tag
+                </h1>
+                <p class="page-subtitle">Create a custom tag to organize and categorize your tasks</p>
+            </div>
+
+            <form asp-action="Create" method="post" id="createTagForm" novalidate>
+                @Html.AntiForgeryToken()
+
+                <div class="form-group has-icon">
+                    <label asp-for="Name" class="form-label required-field">
+                        <i class="fas fa-tag"></i>
+                        Tag Name
+                    </label>
+                    <input asp-for="Name"
+                           class="form-control"
+                           placeholder="Enter a descriptive tag name"
+                           maxlength="50"
+                           id="tagName" />
+                    <i class="fas fa-bookmark input-icon"></i>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                    <div class="char-counter" id="nameCounter">0/50</div>
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i>
+                        Choose a short, meaningful name for your tag
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ColorCode" class="form-label required-field">
+                        <i class="fas fa-palette"></i>
+                        Tag Color
+                    </label>
+                    <div class="color-picker-group">
+                        <input asp-for="ColorCode"
+                               type="color"
+                               class="form-control-color"
+                               id="colorPicker"
+                               value="#667EEA" />
+                        <input asp-for="ColorCode"
+                               type="text"
+                               class="form-control color-text-input"
+                               placeholder="#667EEA"
+                               id="colorText"
+                               maxlength="7" />
+                    </div>
+                    <span asp-validation-for="ColorCode" class="text-danger"></span>
+                    <div class="help-text">
+                        <i class="fas fa-lightbulb"></i>
+                        Pick a color that stands out and represents the tag purpose
+                    </div>
+                </div>
+
+                <div class="preview-section">
+                    <div class="preview-label">
+                        <i class="fas fa-eye"></i>
+                        Tag Preview
+                    </div>
+                    <div>
+                        <span id="tagPreview" class="tag-preview">
+                            Sample Tag
+                        </span>
+                    </div>
+                    <div class="color-info" id="colorInfo">
+                        <div class="color-info-item">
+                            <strong>Hex Code:</strong>
+                            <span id="hexValue">#667EEA</span>
+                        </div>
+                        <div class="color-info-item">
+                            <strong>RGB:</strong>
+                            <span id="rgbValue">rgb(102, 126, 234)</span>
+                        </div>
+                        <div class="color-info-item">
+                            <strong>Contrast:</strong>
+                            <span id="contrastValue">Good</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <span class="btn-text">
+                            <i class="fas fa-plus"></i>
+                            Create Tag
+                        </span>
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('createTagForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const tagName = document.getElementById('tagName');
+            const colorPicker = document.getElementById('colorPicker');
+            const colorText = document.getElementById('colorText');
+            const tagPreview = document.getElementById('tagPreview');
+            const nameCounter = document.getElementById('nameCounter');
+            const hexValue = document.getElementById('hexValue');
+            const rgbValue = document.getElementById('rgbValue');
+            const contrastValue = document.getElementById('contrastValue');
+
+            // Initialize with default values
+            colorPicker.value = '#667EEA';
+            colorText.value = '#667EEA';
             updatePreview();
+
+            // Character counter for tag name
+            function updateCounter(input, counter, maxLength) {
+                const length = input.value.length;
+                counter.textContent = `${length}/${maxLength}`;
+
+                counter.classList.remove('warning', 'danger');
+                if (length > maxLength * 0.8) {
+                    counter.classList.add('warning');
+                }
+                if (length > maxLength * 0.95) {
+                    counter.classList.add('danger');
+                }
+            }
+
+            // Update preview function
+            function updatePreview() {
+                const name = tagName.value.trim() || 'Sample Tag';
+                const color = colorPicker.value.toUpperCase();
+
+                // Update preview
+                tagPreview.textContent = name;
+                tagPreview.style.backgroundColor = color;
+
+                // Calculate contrast and text color
+                const rgb = hexToRgb(color);
+                const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
+                const textColor = brightness > 128 ? '#000000' : '#FFFFFF';
+                tagPreview.style.color = textColor;
+
+                // Update color info
+                hexValue.textContent = color;
+                rgbValue.textContent = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+
+                // Update contrast info
+                const contrast = brightness > 128 ? 'Good (Dark text)' : 'Good (Light text)';
+                contrastValue.textContent = contrast;
+                contrastValue.style.color = brightness > 128 ? '#155724' : '#721c24';
+
+                // Sync color inputs
+                colorText.value = color;
+            }
+
+            // Hex to RGB conversion
+            function hexToRgb(hex) {
+                const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return result ? {
+                    r: parseInt(result[1], 16),
+                    g: parseInt(result[2], 16),
+                    b: parseInt(result[3], 16)
+                } : { r: 0, g: 0, b: 0 };
+            }
+
+            // Validate hex color
+            function isValidHex(hex) {
+                return /^#[0-9A-F]{6}$/i.test(hex);
+            }
+
+            // Real-time validation
+            function validateField(field) {
+                const value = field.value.trim();
+
+                if (field === tagName) {
+                    if (value.length === 0) {
+                        setFieldError(field, 'Tag name is required');
+                        return false;
+                    } else if (value.length < 2) {
+                        setFieldError(field, 'Tag name must be at least 2 characters');
+                        return false;
+                    } else if (value.length > 50) {
+                        setFieldError(field, 'Tag name cannot exceed 50 characters');
+                        return false;
+                    } else {
+                        setFieldValid(field);
+                        return true;
+                    }
+                }
+
+                if (field === colorText) {
+                    if (!value) {
+                        setFieldError(field, 'Color code is required');
+                        return false;
+                    } else if (!isValidHex(value)) {
+                        setFieldError(field, 'Please enter a valid hex color (e.g., #FF0000)');
+                        return false;
+                    } else {
+                        setFieldValid(field);
+                        colorPicker.value = value.toUpperCase();
+                        return true;
+                    }
+                }
+
+                return true;
+            }
+
+            function setFieldError(field, message) {
+                field.classList.remove('is-valid');
+                field.classList.add('is-invalid');
+
+                const errorSpan = field.parentElement.querySelector('.text-danger');
+                if (errorSpan) {
+                    errorSpan.textContent = message;
+                }
+            }
+
+            function setFieldValid(field) {
+                field.classList.remove('is-invalid');
+                field.classList.add('is-valid');
+
+                const errorSpan = field.parentElement.querySelector('.text-danger');
+                if (errorSpan) {
+                    errorSpan.textContent = '';
+                }
+            }
+
+            // Event listeners
+            tagName.addEventListener('input', function() {
+                updateCounter(this, nameCounter, 50);
+                validateField(this);
+                updatePreview();
+            });
+
+            colorPicker.addEventListener('input', function() {
+                colorText.value = this.value.toUpperCase();
+                validateField(colorText);
+                updatePreview();
+            });
+
+            colorText.addEventListener('input', function() {
+                this.value = this.value.toUpperCase();
+                if (isValidHex(this.value)) {
+                    colorPicker.value = this.value;
+                    updatePreview();
+                }
+                validateField(this);
+            });
+
+            // Form submission with loading state
+            form.addEventListener('submit', function(e) {
+                let isValid = true;
+
+                // Validate all fields
+                [tagName, colorText].forEach(field => {
+                    if (!validateField(field)) {
+                        isValid = false;
+                    }
+                });
+
+                if (!isValid) {
+                    e.preventDefault();
+                    showNotification('Please fix the errors above', 'error');
+                    return;
+                }
+
+                // Show loading state
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+            });
+
+            // Focus management
+            tagName.addEventListener('blur', function() {
+                validateField(this);
+            });
+
+            colorText.addEventListener('blur', function() {
+                validateField(this);
+            });
+
+            // Auto-focus first field
+            tagName.focus();
+
+            // Initialize counters and validation
+            updateCounter(tagName, nameCounter, 50);
         });
+
+        // Notification system
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} position-fixed top-0 end-0 m-3`;
+            notification.style.zIndex = '10000';
+            notification.style.animation = 'slideIn 0.3s ease';
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                ${message}
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Add slideOut animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @@keyframes slideOut {
+                from {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateX(100%);
+                }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
+</body>
+</html>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }

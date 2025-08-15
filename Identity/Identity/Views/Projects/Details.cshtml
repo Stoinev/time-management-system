@@ -1,28 +1,713 @@
 ﻿@model Identity.Models.Project
-
 @{
     ViewData["Title"] = "Project Details";
 }
 
-<h2>Project Details</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - @Model.Name</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .project-details-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            margin: 20px auto;
+            max-width: 800px;
+        }
 
-<div class="mb-3">
-    <strong>ID:</strong> @Model.Id
-</div>
-<div class="mb-3">
-    <strong>Name:</strong> @Model.Name
-</div>
-<div class="mb-3">
-    <strong>Description:</strong> @Model.Description
-</div>
-<div class="mb-3">
-    <strong>Created By:</strong> @Model.CreatedBy?.UserName
-</div>
-<div class="mb-3">
-    <strong>Created Date:</strong> @Model.CreatedDate.ToString("yyyy-MM-dd")
-</div>
-<div class="mb-3">
-    <strong>Status:</strong> @(Model.IsActive ? "Active" : "Inactive")
-</div>
+        .detail-item {
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f1f3f4;
+        }
 
-<a asp-action="Manage" class="btn btn-secondary">Back to Manage</a>
+            .detail-item:last-of-type {
+                border-bottom: none;
+                margin-bottom: 24px;
+            }
+
+        .detail-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            color: #6c757d;
+            font-size: 15px;
+        }
+
+        /* Project Stats Section */
+        .stats-section {
+            background: linear-gradient(135deg, #f6f9fc 0%, #e9ecef 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 16px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+
+            .stat-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: #667eea;
+        }
+
+        /* Tasks Section */
+        .tasks-section {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tasks-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .task-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid #17a2b8;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+            .task-item:hover {
+                background: #e9ecef;
+                transform: translateX(4px);
+            }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 8px;
+        }
+
+        .task-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .task-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .task-priority {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .priority-low {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .priority-medium {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .priority-high {
+            background-color: #fd7e14;
+            color: white;
+        }
+
+        .priority-critical {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .task-status {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-todo {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .status-inprogress {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .status-testing {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        .status-done {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .task-assigned {
+            font-size: 13px;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+
+            .empty-state i {
+                font-size: 48px;
+                color: #dee2e6;
+                margin-bottom: 16px;
+            }
+
+        /* Status Badge Styles */
+        .status-active {
+            background: #28a745;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-inactive {
+            background: #6c757d;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .project-icon {
+            color: #667eea;
+            margin-right: 8px;
+            font-size: 24px;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .back-btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
+                color: white;
+                text-decoration: none;
+            }
+
+        .manage-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .manage-btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+                color: white;
+                text-decoration: none;
+            }
+
+        /* Loading state */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+            .loading i {
+                animation: spin 1s linear infinite;
+                font-size: 24px;
+            }
+
+        @@keyframes spin {
+            from
+
+        {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+
+        }
+
+        @@keyframes slideIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .slide-in {
+            animation: slideIn 0.3s ease;
+        }
+
+        /* Progress bar for project completion */
+        .progress-section {
+            margin: 16px 0;
+        }
+
+        .progress-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+            background-color: #e9ecef;
+        }
+
+        .progress-bar {
+            border-radius: 4px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <!-- Project Details Card -->
+        <div class="project-details-card">
+            <h2 class="mb-4">
+                <i class="fas fa-folder-open project-icon"></i>
+                Project Details
+            </h2>
+
+            <div class="detail-item">
+                <div class="detail-label">ID:</div>
+                <div class="detail-value" id="projectId">@Model.Id</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Name:</div>
+                <div class="detail-value" id="projectName">@Model.Name</div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.Description))
+            {
+                <div class="detail-item">
+                    <div class="detail-label">Description:</div>
+                    <div class="detail-value">@Model.Description</div>
+                </div>
+            }
+
+            <div class="detail-item">
+                <div class="detail-label">Created By:</div>
+                <div class="detail-value">
+                    @if (Model.CreatedBy != null)
+                    {
+                        <i class="fas fa-user me-2"></i>
+                        <span>@(Model.CreatedBy.UserName ?? Model.CreatedBy.Email)</span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Unknown</span>
+                    }
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Created Date:</div>
+                <div class="detail-value">
+                    <i class="fas fa-calendar me-2"></i>
+                    @Model.CreatedDate.ToString("yyyy-MM-dd HH:mm")
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Status:</div>
+                <div class="detail-value">
+                    <span class="@(Model.IsActive ? "status-active" : "status-inactive")">
+                        <i class="fas fa-@(Model.IsActive ? "check-circle" : "times-circle")"></i>
+                        @(Model.IsActive ? "Active" : "Inactive")
+                    </span>
+                </div>
+            </div>
+
+            <!-- Project Statistics
+            <div class="stats-section">
+                <h5 class="section-title">
+                    <i class="fas fa-chart-bar"></i>
+                    Project Statistics
+                </h5>
+                <div class="stats-grid" id="statsGrid">
+                    <div class="loading">
+                        <i class="fas fa-spinner"></i>
+                        <span class="ms-2">Loading statistics...</span>
+                    </div>
+                </div>
+            </div>-->
+            <!-- Project Tasks
+            <div class="tasks-section">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="section-title mb-0">
+                        <i class="fas fa-tasks"></i>
+                        Project Tasks
+                    </h5>
+                    <a href="/Tasks/Create?projectId=@Model.Id" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-plus me-2"></i>Add Task
+                    </a>
+                </div>
+                <div class="progress-section" id="progressSection" style="display: none;">
+                    <div class="progress-label">
+                        <span>Completion Progress</span>
+                        <span id="progressPercentage">0%</span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="tasks-list" id="tasksList">
+                    <div class="loading">
+                        <i class="fas fa-spinner"></i>
+                        <span class="ms-2">Loading tasks...</span>
+                    </div>
+                </div>
+            </div>-->
+
+            <div class="d-flex gap-2 justify-content-between">
+                <a href="/Projects/Manage" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Projects
+                </a>
+                <div class="d-flex gap-2">
+                    <a href="/Projects/Edit/@Model.Id" class="manage-btn">
+                        <i class="fas fa-edit"></i>
+                        Edit Project
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Project data from model
+        const projectData = {
+            id: @Model.Id,
+            name: '@Html.Raw(Model.Name.Replace("'", "\\'"))',
+            isActive: @Model.IsActive.ToString().ToLower()
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProjectStatistics();
+            loadProjectTasks();
+        });
+
+        // Load project statistics
+        function loadProjectStatistics() {
+            fetch(`/Projects/GetStatistics/@Model.Id`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    displayStatistics(data);
+                })
+                .catch(error => {
+                    console.error('Error loading statistics:', error);
+                    // Show default statistics if API fails
+                    displayStatistics({
+                        totalTasks: 0,
+                        completedTasks: 0,
+                        inProgressTasks: 0,
+                        totalTimeSpent: 0
+                    });
+                });
+        }
+
+        // Display project statistics
+        function displayStatistics(stats) {
+            const statsGrid = document.getElementById('statsGrid');
+
+            const completionPercentage = stats.totalTasks > 0
+                ? Math.round((stats.completedTasks / stats.totalTasks) * 100)
+                : 0;
+
+            statsGrid.innerHTML = `
+                <div class="stat-card slide-in">
+                    <div class="stat-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="stat-number">${stats.totalTasks || 0}</div>
+                    <div class="stat-label">Total Tasks</div>
+                </div>
+                <div class="stat-card slide-in">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-number">${stats.completedTasks || 0}</div>
+                    <div class="stat-label">Completed Tasks</div>
+                </div>
+                <div class="stat-card slide-in">
+                    <div class="stat-icon">
+                        <i class="fas fa-spinner"></i>
+                    </div>
+                    <div class="stat-number">${stats.inProgressTasks || 0}</div>
+                    <div class="stat-label">In Progress</div>
+                </div>
+                <div class="stat-card slide-in">
+                    <div class="stat-icon">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div class="stat-number">${completionPercentage}%</div>
+                    <div class="stat-label">Completion</div>
+                </div>
+            `;
+        }
+
+        // Load project tasks
+        function loadProjectTasks() {
+            fetch(`/Tasks/GetByProject/@Model.Id`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    displayTasks(data);
+                })
+                .catch(error => {
+                    console.error('Error loading tasks:', error);
+                    document.getElementById('tasksList').innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-tasks"></i>
+                            <h5>No tasks found</h5>
+                            <p>Start by creating your first task for this project</p>
+                        </div>
+                    `;
+                });
+        }
+
+        // Display project tasks
+        function displayTasks(tasks) {
+            const tasksList = document.getElementById('tasksList');
+            const progressSection = document.getElementById('progressSection');
+
+            if (!tasks || tasks.length === 0) {
+                tasksList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-tasks"></i>
+                        <h5>No tasks found</h5>
+                        <p>Start by creating your first task for this project</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Calculate progress
+            const completedTasks = tasks.filter(t => t.status === 'Done').length;
+            const progressPercentage = Math.round((completedTasks / tasks.length) * 100);
+
+            // Show progress bar
+            progressSection.style.display = 'block';
+            document.getElementById('progressPercentage').textContent = `${progressPercentage}%`;
+            document.getElementById('progressBar').style.width = `${progressPercentage}%`;
+
+            // Sort tasks by status (In Progress first, then by priority)
+            tasks.sort((a, b) => {
+                const statusOrder = { 'InProgress': 0, 'Testing': 1, 'ToDo': 2, 'Done': 3 };
+                const priorityOrder = { 'Critical': 0, 'High': 1, 'Medium': 2, 'Low': 3 };
+
+                if (statusOrder[a.status] !== statusOrder[b.status]) {
+                    return statusOrder[a.status] - statusOrder[b.status];
+                }
+                return priorityOrder[a.priority] - priorityOrder[b.priority];
+            });
+
+            let html = tasks.map(task => {
+                const priorityClass = `priority-${task.priority.toLowerCase()}`;
+                const statusClass = `status-${task.status.toLowerCase()}`;
+
+                return `
+                    <div class="task-item slide-in" onclick="window.location.href='/Tasks/Details/${task.id}'">
+                        <div class="task-header">
+                            <div>
+                                <div class="task-title">${escapeHtml(task.title)}</div>
+                                <div class="task-meta">
+                                    <span class="task-priority ${priorityClass}">${task.priority}</span>
+                                    <span class="task-status ${statusClass}">${formatStatus(task.status)}</span>
+                                    ${task.assignedUser ? `
+                                        <div class="task-assigned">
+                                            <i class="fas fa-user"></i>
+                                            ${escapeHtml(task.assignedUser.userName || task.assignedUser.email)}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                            <div class="text-muted small">
+                                ${formatDate(task.createdDate)}
+                            </div>
+                        </div>
+                        ${task.description ? `
+                            <div class="task-description text-muted small mt-2">
+                                ${escapeHtml(task.description.substring(0, 100))}${task.description.length > 100 ? '...' : ''}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            tasksList.innerHTML = html;
+        }
+
+        // Format task status for display
+        function formatStatus(status) {
+            const statusMap = {
+                'ToDo': 'To Do',
+                'InProgress': 'In Progress',
+                'Testing': 'Testing',
+                'Done': 'Done'
+            };
+            return statusMap[status] || status;
+        }
+
+        // Format date for display
+        function formatDate(date) {
+            if (!date) return 'Unknown date';
+
+            const d = new Date(date);
+            const now = new Date();
+            const diffMs = now - d;
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffDays === 0) {
+                return 'Today';
+            } else if (diffDays === 1) {
+                return 'Yesterday';
+            } else if (diffDays < 7) {
+                return `${diffDays} days ago`;
+            } else {
+                return d.toLocaleDateString();
+            }
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            if (!text) return '';
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.toString().replace(/[&<>"']/g, m => map[m]);
+        }
+    </script>
+</body>
+</html>

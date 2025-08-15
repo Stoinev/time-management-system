@@ -1,71 +1,855 @@
 ﻿@model IEnumerable<Identity.ViewModels.TagViewModel>
-
 @{
     ViewData["Title"] = "Tags";
 }
-
-<h1>Tag Management</h1>
-
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["Success"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-}
-
-<p>
-    <a asp-action="Create" class="btn btn-primary">
-        <i class="bi bi-plus-circle"></i> Create New Tag
-    </a>
-</p>
-
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th>Tag</th>
-            <th>Color</th>
-            <th>Tasks Using Tag</th>
-            <th>Created Date</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    <span class="badge" style="background-color: @item.ColorCode; color: @GetTextColor(item.ColorCode)">
-                        @item.Name
-                    </span>
-                </td>
-                <td>
-                    <div style="width: 30px; height: 30px; background-color: @item.ColorCode; border: 1px solid #ccc; border-radius: 4px;"></div>
-                </td>
-                <td>
-                    <span class="badge bg-secondary">@item.TaskCount tasks</span>
-                </td>
-                <td>
-                    @item.CreatedDate.ToString("MM/dd/yyyy")
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-pencil"></i> Edit
-                    </a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">
-                        <i class="bi bi-trash"></i> Delete
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
 @functions {
     string GetTextColor(string backgroundColor)
     {
+        if (string.IsNullOrEmpty(backgroundColor) || !backgroundColor.StartsWith("#") || backgroundColor.Length != 7)
+            return "black";
+
         var color = System.Drawing.ColorTranslator.FromHtml(backgroundColor);
         var brightness = (color.R * 299 + color.G * 587 + color.B * 114) / 1000;
         return brightness > 128 ? "#000000" : "#FFFFFF";
     }
 }
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 24px 0;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .success-alert {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 2px solid #28a745;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            animation: slideInDown 0.5s ease;
+        }
+
+        @@keyframes slideInDown {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .modern-filter {
+            position: relative;
+            display: inline-block;
+        }
+
+        .filter-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+            .filter-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+                color: white;
+            }
+
+        .filter-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            min-width: 200px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .modern-filter:hover .filter-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .filter-option {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            color: #495057;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .filter-option:hover {
+                background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+                color: #0066cc;
+                padding-left: 20px;
+            }
+
+            .filter-option:first-child {
+                border-radius: 12px 12px 0 0;
+            }
+
+            .filter-option:last-child {
+                border-radius: 0 0 12px 12px;
+                border-bottom: none;
+            }
+
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-input {
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+            padding: 10px 40px 10px 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+            .search-input:focus {
+                border-color: #667eea;
+                box-shadow: 0 4px 16px rgba(102, 126, 234, 0.2);
+                outline: none;
+            }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        .active-filters {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            animation: slideIn 0.3s ease;
+        }
+
+            .filter-tag .remove-filter {
+                cursor: pointer;
+                font-size: 14px;
+                opacity: 0.8;
+                transition: opacity 0.2s ease;
+            }
+
+                .filter-tag .remove-filter:hover {
+                    opacity: 1;
+                }
+
+        @@keyframes slideIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+            .table thead th {
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                border: none;
+                color: #495057;
+                font-weight: 600;
+                padding: 16px;
+                position: relative;
+            }
+
+                .table thead th::after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 0;
+                    height: 2px;
+                    background: linear-gradient(90deg, #667eea, #764ba2);
+                    transition: width 0.3s ease;
+                }
+
+                .table thead th:hover::after {
+                    width: 80%;
+                }
+
+            .table tbody tr {
+                transition: all 0.3s ease;
+                position: relative;
+            }
+
+                .table tbody tr:hover {
+                    background: linear-gradient(135deg, #f8f9ff 0%, #e3e8ff 100%);
+                    transform: translateX(4px);
+                    box-shadow: 0 2px 12px rgba(102, 126, 234, 0.1);
+                }
+
+            .table tbody td {
+                padding: 16px;
+                vertical-align: middle;
+                border-color: rgba(0, 0, 0, 0.05);
+                position: relative;
+            }
+
+        .tag-display {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .tag-display::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transition: left 0.5s;
+            }
+
+            .tag-display:hover::before {
+                left: 100%;
+            }
+
+            .tag-display:hover {
+                transform: scale(1.05);
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            }
+
+        .color-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 2px solid #dee2e6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .color-preview::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.3) 50%, transparent 60%);
+                animation: colorShimmer 2s infinite;
+            }
+
+        @@keyframes colorShimmer {
+            0%
+
+        {
+            transform: translateX(-100%);
+        }
+
+        100% {
+            transform: translateX(100%);
+        }
+
+        }
+
+        .usage-badge {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 2px 8px rgba(23, 162, 184, 0.3);
+            transition: all 0.3s ease;
+        }
+
+            .usage-badge:hover {
+                transform: scale(1.1);
+                box-shadow: 0 4px 16px rgba(23, 162, 184, 0.4);
+            }
+
+        .btn-action {
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .btn-action:hover {
+                transform: translateY(-2px);
+                text-decoration: none;
+            }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+        }
+
+            .btn-edit:hover {
+                color: white;
+                box-shadow: 0 4px 16px rgba(0, 123, 255, 0.4);
+            }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        }
+
+            .btn-delete:hover {
+                color: white;
+                box-shadow: 0 4px 16px rgba(220, 53, 69, 0.4);
+            }
+
+        .create-btn {
+            background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(40, 167, 69, 0.3);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .create-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+                color: white;
+                text-decoration: none;
+            }
+
+        .customize-btn {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(108, 117, 125, 0.3);
+        }
+
+            .customize-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+                color: white;
+            }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+            animation: fadeIn 0.5s ease;
+        }
+
+            .no-results i {
+                font-size: 64px;
+                margin-bottom: 20px;
+                opacity: 0.3;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+        @@keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .stats-row {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-left: 4px solid #2196f3;
+            margin: 16px 0;
+            border-radius: 8px;
+        }
+
+        .stats-summary {
+            display: flex;
+            justify-content: space-around;
+            padding: 16px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 12px;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6c757d;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .loading-shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @@keyframes shimmer {
+            0%
+
+        {
+            background-position: -200% 0;
+        }
+
+        100% {
+            background-position: 200% 0;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="page-title">
+                            <i class="fas fa-tags"></i>
+                            Tag Management
+                        </h1>
+                        <p class="page-subtitle">Organize and manage your task tags</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a asp-action="Create" class="create-btn">
+                            <i class="fas fa-plus"></i>
+                            Create New Tag
+                        </a>
+                        <button class="customize-btn">
+                            <i class="fas fa-cog"></i>
+                            Customize
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Alert -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="success-alert alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <!-- Statistics Summary -->
+        <div class="stats-summary" id="statsSummary">
+            <div class="stat-item">
+                <div class="stat-number loading-shimmer" style="width: 40px; height: 28px; border-radius: 4px;" id="totalTags"></div>
+                <div class="stat-label">Total Tags</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number loading-shimmer" style="width: 40px; height: 28px; border-radius: 4px;" id="activeTags"></div>
+                <div class="stat-label">Active Tags</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number loading-shimmer" style="width: 40px; height: 28px; border-radius: 4px;" id="totalUsage"></div>
+                <div class="stat-label">Total Usage</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number loading-shimmer" style="width: 40px; height: 28px; border-radius: 4px;" id="avgUsage"></div>
+                <div class="stat-label">Avg Usage</div>
+            </div>
+        </div>
+
+        <!-- Search and Filter Controls -->
+        <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="search-container">
+                <input type="text" class="form-control search-input" id="searchInput"
+                       placeholder="Search tags..." aria-label="Search">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+
+            <div class="modern-filter">
+                <button class="btn filter-btn">
+                    <i class="fas fa-filter me-2"></i>Filter
+                </button>
+                <div class="filter-dropdown">
+                    <div class="filter-option" data-filter="usage" data-value="">
+                        <i class="fas fa-list"></i>
+                        All Tags
+                    </div>
+                    <div class="filter-option" data-filter="usage" data-value="used">
+                        <i class="fas fa-check-circle"></i>
+                        Used Tags
+                    </div>
+                    <div class="filter-option" data-filter="usage" data-value="unused">
+                        <i class="fas fa-circle"></i>
+                        Unused Tags
+                    </div>
+                    <div class="filter-option" data-filter="usage" data-value="popular">
+                        <i class="fas fa-fire"></i>
+                        Popular Tags (5+)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="active-filters" id="activeFilters"></div>
+
+        <!-- Tags Table -->
+        <div class="table-container">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-tag me-2"></i>Tag</th>
+                        <th><i class="fas fa-palette me-2"></i>Color</th>
+                        <th><i class="fas fa-chart-bar me-2"></i>Usage</th>
+                        <th><i class="fas fa-calendar me-2"></i>Created</th>
+                        <th><i class="fas fa-cog me-2"></i>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tagsTableBody">
+                    @foreach (var tag in Model)
+                    {
+                        <tr data-usage="@tag.TaskCount" data-name="@tag.Name.ToLower()">
+                            <td>
+                                <div class="tag-display" style="background-color: @tag.ColorCode; color: @GetTextColor(tag.ColorCode)">
+                                    <i class="fas fa-tag"></i>
+                                    @tag.Name
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="color-preview" style="background-color: @tag.ColorCode"></div>
+                                    <code style="background: #f8f9fa; padding: 4px 8px; border-radius: 4px; font-size: 12px;">@tag.ColorCode</code>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="usage-badge">
+                                    <i class="fas fa-tasks"></i>
+                                    @tag.TaskCount task@(tag.TaskCount != 1 ? "s" : "")
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fas fa-calendar-alt text-muted"></i>
+                                    <span>@tag.CreatedDate.ToString("MMM dd, yyyy")</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a asp-action="Edit" asp-route-id="@tag.Id" class="btn-action btn-edit">
+                                        <i class="fas fa-edit"></i>
+                                        Edit
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@tag.Id" class="btn-action btn-delete">
+                                        <i class="fas fa-trash"></i>
+                                        Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="no-results" id="noResults" style="display:none;">
+                <i class="fas fa-tags"></i>
+                <h5>No tags found</h5>
+                <p>Try adjusting your search or filters, or create your first tag</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        class ModernTagFilter {
+            constructor() {
+                this.activeFilters = {
+                    usage: '',
+                    search: ''
+                };
+                this.allRows = [];
+                this.tags = [];
+                this.init();
+            }
+
+            init() {
+                // Store all table rows and extract tag data
+                this.allRows = Array.from(document.querySelectorAll('#tagsTableBody tr'));
+                this.tags = this.allRows.map(row => ({
+                    element: row,
+                    name: row.dataset.name,
+                    usage: parseInt(row.dataset.usage) || 0
+                }));
+
+                // Setup event listeners
+                this.setupFilterListeners();
+                this.setupSearchListener();
+
+                // Load statistics
+                this.loadStatistics();
+            }
+
+            setupFilterListeners() {
+                document.querySelectorAll('.filter-option').forEach(option => {
+                    option.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        const filterType = e.target.dataset.filter;
+                        const filterValue = e.target.dataset.value;
+
+                        this.activeFilters[filterType] = filterValue;
+                        this.updateActiveFiltersDisplay();
+                        this.applyFilters();
+
+                        // Hide filter dropdown after selection
+                        this.hideFilterDropdown();
+                    });
+                });
+            }
+
+            setupSearchListener() {
+                const searchInput = document.getElementById('searchInput');
+                searchInput.addEventListener('input', (e) => {
+                    this.activeFilters.search = e.target.value.toLowerCase();
+                    this.applyFilters();
+                });
+            }
+
+            hideFilterDropdown() {
+                setTimeout(() => {
+                    document.querySelector('.modern-filter').style.pointerEvents = 'none';
+                    setTimeout(() => {
+                        document.querySelector('.modern-filter').style.pointerEvents = 'auto';
+                    }, 100);
+                }, 100);
+            }
+
+            updateActiveFiltersDisplay() {
+                const container = document.getElementById('activeFilters');
+                container.innerHTML = '';
+
+                Object.entries(this.activeFilters).forEach(([type, value]) => {
+                    if (value && type !== 'search') {
+                        const tag = document.createElement('div');
+                        tag.className = 'filter-tag';
+
+                        const displayValue = value === 'used' ? 'Used Tags' :
+                                           value === 'unused' ? 'Unused Tags' :
+                                           value === 'popular' ? 'Popular Tags' : value;
+
+                        tag.innerHTML = `
+                            <span>${type}: ${displayValue}</span>
+                            <span class="remove-filter" data-filter="${type}">×</span>
+                        `;
+                        container.appendChild(tag);
+
+                        // Add remove functionality
+                        tag.querySelector('.remove-filter').addEventListener('click', () => {
+                            this.activeFilters[type] = '';
+                            this.updateActiveFiltersDisplay();
+                            this.applyFilters();
+                        });
+                    }
+                });
+            }
+
+            applyFilters() {
+                let visibleCount = 0;
+
+                this.tags.forEach(tag => {
+                    const matchesUsage = this.matchesUsageFilter(tag);
+                    const matchesSearch = !this.activeFilters.search ||
+                                        tag.name.includes(this.activeFilters.search);
+
+                    const shouldShow = matchesUsage && matchesSearch;
+
+                    if (shouldShow) {
+                        tag.element.style.display = '';
+                        visibleCount++;
+                    } else {
+                        tag.element.style.display = 'none';
+                    }
+                });
+
+                // Show/hide no results message
+                const noResults = document.getElementById('noResults');
+                if (visibleCount === 0) {
+                    noResults.style.display = 'block';
+                } else {
+                    noResults.style.display = 'none';
+                }
+            }
+
+            matchesUsageFilter(tag) {
+                const filter = this.activeFilters.usage;
+
+                switch (filter) {
+                    case 'used':
+                        return tag.usage > 0;
+                    case 'unused':
+                        return tag.usage === 0;
+                    case 'popular':
+                        return tag.usage >= 5;
+                    default:
+                        return true;
+                }
+            }
+
+            loadStatistics() {
+                // Calculate statistics from current data
+                setTimeout(() => {
+                    const totalTags = this.tags.length;
+                    const activeTags = this.tags.filter(tag => tag.usage > 0).length;
+                    const totalUsage = this.tags.reduce((sum, tag) => sum + tag.usage, 0);
+                    const avgUsage = totalTags > 0 ? Math.round(totalUsage / totalTags * 10) / 10 : 0;
+
+                    // Update statistics display
+                    this.updateStatElement('totalTags', totalTags);
+                    this.updateStatElement('activeTags', activeTags);
+                    this.updateStatElement('totalUsage', totalUsage);
+                    this.updateStatElement('avgUsage', avgUsage);
+                }, 800);
+            }
+
+            updateStatElement(id, value) {
+                const element = document.getElementById(id);
+                element.className = 'stat-number';
+                element.style.width = 'auto';
+                element.style.height = 'auto';
+                element.textContent = value;
+            }
+        }
+
+        // Initialize the filter system when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            new ModernTagFilter();
+        });
+    </script>
+</body>
+</html>

@@ -3,60 +3,441 @@
     ViewData["Title"] = "Manage Projects";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="fw-bold">Manage Projects</h2>
-        <div class="d-flex gap-2">
-            <a class="btn btn-primary" asp-action="Create">Create project</a>
-            <button class="btn btn-secondary">Customize</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <style>
+        .modern-filter {
+            position: relative;
+            display: inline-block;
+        }
+
+        .filter-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+            .filter-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+                color: white;
+            }
+
+        .filter-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            min-width: 180px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .modern-filter:hover .filter-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .filter-option {
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            color: #495057;
+            font-size: 14px;
+        }
+
+            .filter-option:hover {
+                background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+                color: #0066cc;
+                padding-left: 20px;
+            }
+
+            .filter-option:first-child {
+                border-radius: 12px 12px 0 0;
+            }
+
+            .filter-option:last-child {
+                border-radius: 0 0 12px 12px;
+                border-bottom: none;
+            }
+
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-input {
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+            padding: 10px 40px 10px 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+            .search-input:focus {
+                border-color: #667eea;
+                box-shadow: 0 4px 16px rgba(102, 126, 234, 0.2);
+                outline: none;
+            }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        .active-filters {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            animation: slideIn 0.3s ease;
+        }
+
+            .filter-tag .remove-filter {
+                cursor: pointer;
+                font-size: 14px;
+                opacity: 0.8;
+                transition: opacity 0.2s ease;
+            }
+
+                .filter-tag .remove-filter:hover {
+                    opacity: 1;
+                }
+
+        @@keyframes slideIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+            .table thead th {
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                border: none;
+                color: #495057;
+                font-weight: 600;
+                padding: 16px;
+            }
+
+            .table tbody tr {
+                transition: all 0.2s ease;
+            }
+
+                .table tbody tr:hover {
+                    background: linear-gradient(135deg, #f8f9ff 0%, #e3e8ff 100%);
+                    transform: translateX(4px);
+                }
+
+            .table tbody td {
+                padding: 16px;
+                vertical-align: middle;
+                border-color: rgba(0, 0, 0, 0.05);
+            }
+
+        .btn-action {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+            .btn-action:hover {
+                transform: translateY(-1px);
+            }
+
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+
+            .no-results i {
+                font-size: 48px;
+                margin-bottom: 16px;
+                opacity: 0.5;
+            }
+
+        .project-icon {
+            color: #667eea;
+            margin-right: 8px;
+        }
+
+        .status-active {
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-inactive {
+            background: #6c757d;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="fw-bold">@ViewData["Title"]</h2>
+            <div class="d-flex gap-2">
+                <a class="btn btn-primary" asp-action="Create" style="border-radius: 8px; padding: 8px 16px;">
+                    Create Project
+                </a>
+                <button class="btn btn-secondary" style="border-radius: 8px; padding: 8px 16px;">
+                    Customize
+                </button>
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="search-container">
+                <input type="text" class="form-control search-input" id="searchInput"
+                       placeholder="Search projects..." aria-label="Search">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+
+            <div class="modern-filter">
+                <button class="btn filter-btn">
+                    <i class="fas fa-filter me-2"></i>Filter
+                </button>
+                <div class="filter-dropdown">
+                    <div class="filter-option" data-filter="status" data-value="">
+                        All Projects
+                    </div>
+                    <div class="filter-option" data-filter="status" data-value="Active">
+                        Active Projects
+                    </div>
+                    <div class="filter-option" data-filter="status" data-value="Inactive">
+                        Inactive Projects
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="active-filters" id="activeFilters"></div>
+
+        <div class="table-container">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Created By</th>
+                        <th>Created Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="projectsTableBody">
+                    @foreach (var project in Model)
+                    {
+                        <tr data-status="@(project.IsActive ? "Active" : "Inactive")">
+                            <td>@project.Id</td>
+                            <td>
+                                <i class="fas fa-folder-open project-icon"></i>
+                                @project.Name
+                            </td>
+                            <td>@project.Description</td>
+                            <td>@project.CreatedBy?.UserName</td>
+                            <td>@project.CreatedDate.ToString("yyyy-MM-dd")</td>
+                            <td>
+                                <span class="@(project.IsActive ? "status-active" : "status-inactive")">
+                                    @(project.IsActive ? "Active" : "Inactive")
+                                </span>
+                            </td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@project.Id" class="btn btn-sm btn-outline-primary btn-action me-1">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@project.Id" class="btn btn-sm btn-outline-danger btn-action me-1">Delete</a>
+                                <a asp-action="Details" asp-route-id="@project.Id" class="btn btn-sm btn-outline-info btn-action">Details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="no-results" id="noResults" style="display:none;">
+                <i class="fas fa-search"></i>
+                <h5>No projects found</h5>
+                <p>Try adjusting your search or filters</p>
+            </div>
         </div>
     </div>
 
-    <form method="get" class="input-group mb-3">
-        <input type="text" name="searchTerm" class="form-control" placeholder="Search projects..." aria-label="Search" value="@Context.Request.Query["searchTerm"]" />
-        <button class="btn btn-outline-secondary" type="submit">Search</button>
-
-        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Filter</button>
-        <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Active</a></li>
-            <li><a class="dropdown-item" href="#">Archived</a></li>
-        </ul>
-    </form>
-
-    <table class="table table-bordered table-hover">
-        <thead class="table-light">
-            <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Name</th>
-                <th scope="col">Description</th>
-                <th scope="col">Created By</th>
-                <th scope="col">Created Date</th>
-                <th scope="col">Is Active</th>
-                <th scope="col" class="text-center">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var project in Model)
-            {
-                <tr>
-                    <td>@project.Id</td>
-                    <td>
-                        <i class="bi bi-folder2-open me-1"></i>
-                        @project.Name
-                    </td>
-                    <td>@project.Description</td>
-                    <td>@project.CreatedBy?.UserName</td>
-                    <td>@project.CreatedDate.ToString("yyyy-MM-dd")</td>
-                    <td>@(project.IsActive ? "Yes" : "No")</td>
-                    <td class="text-center">
-                        <div class="btn-group" role="group">
-                            <a asp-action="Edit" asp-route-id="@project.Id" class="btn btn-sm btn-warning">Edit</a>
-                            <a asp-action="Delete" asp-route-id="@project.Id" class="btn btn-sm btn-danger">Delete</a>
-							<a asp-action="Details" asp-route-id="@project.Id" class="btn btn-sm btn-info">Details</a>
-                        </div>
-                    </td>
-                </tr>
+    <script>
+        class ModernProjectFilter {
+            constructor() {
+                this.activeFilters = {
+                    status: '',
+                    search: ''
+                };
+                this.allRows = [];
+                this.init();
             }
-        </tbody>
-    </table>
-</div>
+
+            init() {
+                // Store all table rows
+                this.allRows = Array.from(document.querySelectorAll('#projectsTableBody tr'));
+
+                // Setup event listeners
+                this.setupFilterListeners();
+                this.setupSearchListener();
+            }
+
+            setupFilterListeners() {
+                document.querySelectorAll('.filter-option').forEach(option => {
+                    option.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        const filterType = e.target.dataset.filter;
+                        const filterValue = e.target.dataset.value;
+
+                        this.activeFilters[filterType] = filterValue;
+                        this.updateActiveFiltersDisplay();
+                        this.applyFilters();
+
+                        // Hide filter dropdown after selection
+                        this.hideFilterDropdown();
+                    });
+                });
+            }
+
+            setupSearchListener() {
+                const searchInput = document.getElementById('searchInput');
+                searchInput.addEventListener('input', (e) => {
+                    this.activeFilters.search = e.target.value.toLowerCase();
+                    this.applyFilters();
+                });
+            }
+
+            hideFilterDropdown() {
+                // Add a small delay to allow for smooth hover transitions
+                setTimeout(() => {
+                    document.querySelector('.modern-filter').style.pointerEvents = 'none';
+                    setTimeout(() => {
+                        document.querySelector('.modern-filter').style.pointerEvents = 'auto';
+                    }, 100);
+                }, 100);
+            }
+
+            updateActiveFiltersDisplay() {
+                const container = document.getElementById('activeFilters');
+                container.innerHTML = '';
+
+                Object.entries(this.activeFilters).forEach(([type, value]) => {
+                    if (value && type !== 'search') {
+                        const tag = document.createElement('div');
+                        tag.className = 'filter-tag';
+                        tag.innerHTML = `
+                            <span>${type}: ${value}</span>
+                            <span class="remove-filter" data-filter="${type}">×</span>
+                        `;
+                        container.appendChild(tag);
+
+                        // Add remove functionality
+                        tag.querySelector('.remove-filter').addEventListener('click', () => {
+                            this.activeFilters[type] = '';
+                            this.updateActiveFiltersDisplay();
+                            this.applyFilters();
+                        });
+                    }
+                });
+            }
+
+            applyFilters() {
+                let visibleCount = 0;
+
+                this.allRows.forEach(row => {
+                    const statusData = row.dataset.status || '';
+                    const textContent = row.textContent.toLowerCase();
+
+                    const matchesStatus = !this.activeFilters.status || statusData === this.activeFilters.status;
+                    const matchesSearch = !this.activeFilters.search || textContent.includes(this.activeFilters.search);
+
+                    const shouldShow = matchesStatus && matchesSearch;
+
+                    if (shouldShow) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                // Show/hide no results message
+                const noResults = document.getElementById('noResults');
+                if (visibleCount === 0) {
+                    noResults.style.display = 'block';
+                } else {
+                    noResults.style.display = 'none';
+                }
+            }
+        }
+
+        // Initialize the filter system when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            new ModernProjectFilter();
+        });
+    </script>
+</body>
+</html>

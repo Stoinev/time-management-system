@@ -1,64 +1,838 @@
 ﻿@model Identity.Models.TaskItem
-
 @{
     ViewData["Title"] = "Edit Task";
 }
 
-<h2>Edit Task</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - @Model.Title</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
 
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Id" />
+        .edit-task-container {
+            padding: 40px 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    <div class="mb-3">
-        <label asp-for="Title" class="form-label"></label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
+        .edit-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            margin: 20px auto;
+            max-width: 800px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .edit-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            }
+
+        .edit-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 32px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .edit-icon {
+            font-size: 48px;
+            color: #667eea;
+            margin-bottom: 16px;
+            animation: pulse 2s infinite;
+        }
+
+        @@keyframes pulse {
+            0%
+
+        {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+
+        }
+
+        .edit-title {
+            color: #2c3e50;
+            font-weight: 700;
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .edit-subtitle {
+            color: #6c757d;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 28px;
+            border-left: 4px solid #667eea;
+        }
+
+        .section-title {
+            color: #495057;
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .required-field::after {
+            content: ' *';
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        }
+
+            .form-control:focus, .form-select:focus {
+                outline: none;
+                border-color: #667eea;
+                box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+                background: white;
+                transform: translateY(-1px);
+            }
+
+            .form-control:hover, .form-select:hover {
+                border-color: #dee2e6;
+                background: white;
+            }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .form-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 16px 12px;
+            padding-right: 48px;
+        }
+
+            .form-select[multiple] {
+                min-height: 120px;
+                background-image: none;
+                padding-right: 20px;
+            }
+
+            .form-select option {
+                padding: 8px 12px;
+                border-radius: 4px;
+                margin: 2px 0;
+            }
+
+            .form-control.is-invalid, .form-select.is-invalid {
+                border-color: #dc3545;
+                box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+            }
+
+            .form-control.is-valid, .form-select.is-valid {
+                border-color: #28a745;
+                box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+            }
+
+        .text-danger {
+            color: #dc3545 !important;
+            font-size: 13px;
+            font-weight: 500;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .text-danger::before {
+                content: '\f071';
+                font-family: 'Font Awesome 6 Free';
+                font-weight: 900;
+            }
+
+        .help-text {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .priority-preview, .status-preview {
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: 8px;
+        }
+
+        .priority-low {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .priority-medium {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .priority-high {
+            background-color: #fd7e14;
+            color: white;
+        }
+
+        .priority-critical {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .status-todo {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .status-inprogress {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .status-testing {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        .status-done {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .character-count {
+            font-size: 12px;
+            color: #6c757d;
+            text-align: right;
+            margin-top: 4px;
+        }
+
+            .character-count.warning {
+                color: #ffc107;
+            }
+
+            .character-count.danger {
+                color: #dc3545;
+            }
+
+        .tag-selection {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 16px;
+            min-height: 120px;
+        }
+
+            .tag-selection:hover {
+                border-color: #dee2e6;
+            }
+
+            .tag-selection:focus-within {
+                border-color: #667eea;
+                box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 40px;
+            padding-top: 32px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 140px;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+        }
+
+            .btn-save::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transition: left 0.5s;
+            }
+
+            .btn-save:hover::before {
+                left: 100%;
+            }
+
+            .btn-save:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+                color: white;
+            }
+
+        .btn-cancel {
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 2px solid #e9ecef;
+        }
+
+            .btn-cancel:hover {
+                background: #e9ecef;
+                color: #495057;
+                border-color: #dee2e6;
+                transform: translateY(-1px);
+            }
+
+        .btn.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+            .btn.loading .btn-text {
+                opacity: 0;
+            }
+
+            .btn.loading::after {
+                content: '';
+                position: absolute;
+                width: 20px;
+                height: 20px;
+                border: 2px solid transparent;
+                border-top-color: currentColor;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+
+        @@keyframes spin {
+            to
+
+        {
+            transform: rotate(360deg);
+        }
+
+        }
+
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @@keyframes slideIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .edit-card
+
+        {
+            margin: 10px;
+            padding: 24px;
+            border-radius: 12px;
+        }
+
+        .edit-title {
+            font-size: 28px;
+        }
+
+        .form-section {
+            padding: 20px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+
+        }
+
+        @@media (max-width: 576px) {
+            .edit-task-container
+
+        {
+            padding: 20px 10px;
+        }
+
+        }
+
+        /* Focus ring for accessibility */
+        .btn:focus {
+            outline: 3px solid rgba(102, 126, 234, 0.5);
+            outline-offset: 2px;
+        }
+
+        .btn-cancel:focus {
+            outline: 3px solid rgba(108, 117, 125, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="edit-task-container">
+        <div class="edit-card slide-in">
+            <div class="edit-header">
+                <div class="edit-icon">
+                    <i class="fas fa-edit"></i>
+                </div>
+                <h1 class="edit-title">Edit Task</h1>
+                <p class="edit-subtitle">Update task information and settings</p>
+            </div>
+
+            <form asp-action="Edit" method="post" id="editTaskForm" novalidate>
+                <input type="hidden" asp-for="Id" />
+
+                <!-- Basic Information Section -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-info-circle"></i>
+                        Basic Information
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Title" class="form-label required-field">
+                            <i class="fas fa-tag"></i>
+                            Task Title
+                        </label>
+                        <input asp-for="Title"
+                               class="form-control"
+                               placeholder="Enter a descriptive task title"
+                               maxlength="200"
+                               id="taskTitle" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                        <div class="character-count" id="titleCounter">0/200</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Description" class="form-label">
+                            <i class="fas fa-align-left"></i>
+                            Description
+                        </label>
+                        <textarea asp-for="Description"
+                                  class="form-control"
+                                  placeholder="Describe the task requirements, acceptance criteria, and any important details..."
+                                  maxlength="1000"
+                                  id="taskDescription"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                        <div class="character-count" id="descCounter">0/1000</div>
+                        <div class="help-text">
+                            <i class="fas fa-lightbulb"></i>
+                            A clear description helps team members understand what needs to be done
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project & Assignment Section -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-project-diagram"></i>
+                        Project & Assignment
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="ProjectId" class="form-label required-field">
+                                    <i class="fas fa-folder"></i>
+                                    Project
+                                </label>
+                                <select asp-for="ProjectId"
+                                        class="form-select"
+                                        asp-items="@(ViewData["ProjectId"] as IEnumerable<SelectListItem>)"
+                                        id="projectSelect">
+                                    <option value="">Select a project...</option>
+                                </select>
+                                <span asp-validation-for="ProjectId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="AssignedUserId" class="form-label">
+                                    <i class="fas fa-user"></i>
+                                    Assign To
+                                </label>
+                                <select asp-for="AssignedUserId"
+                                        class="form-select"
+                                        asp-items="@(ViewData["AssignedUserId"] as IEnumerable<SelectListItem>)"
+                                        id="assignedUserSelect">
+                                    <option value="">Unassigned</option>
+                                </select>
+                                <span asp-validation-for="AssignedUserId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Priority & Status Section -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-cog"></i>
+                        Priority & Status
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Priority" class="form-label required-field">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    Priority
+                                    <span class="priority-preview" id="priorityPreview">Medium</span>
+                                </label>
+                                <select asp-for="Priority"
+                                        class="form-select"
+                                        asp-items="@(ViewData["Priorities"] as IEnumerable<SelectListItem>)"
+                                        id="prioritySelect">
+                                </select>
+                                <span asp-validation-for="Priority" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Status" class="form-label required-field">
+                                    <i class="fas fa-tasks"></i>
+                                    Status
+                                    <span class="status-preview" id="statusPreview">To Do</span>
+                                </label>
+                                <select asp-for="Status"
+                                        class="form-select"
+                                        asp-items="@(ViewData["Statuses"] as IEnumerable<SelectListItem>)"
+                                        id="statusSelect">
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Details Section -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-sliders-h"></i>
+                        Additional Details
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="EstimatedHours" class="form-label">
+                                    <i class="fas fa-clock"></i>
+                                    Estimated Hours
+                                </label>
+                                <input asp-for="EstimatedHours"
+                                       class="form-control"
+                                       type="number"
+                                       step="0.5"
+                                       min="0"
+                                       max="999"
+                                       placeholder="e.g., 8.5" />
+                                <span asp-validation-for="EstimatedHours" class="text-danger"></span>
+                                <div class="help-text">
+                                    <i class="fas fa-info-circle"></i>
+                                    Enter the estimated time to complete this task
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="SelectedTagIds" class="form-label">
+                                    <i class="fas fa-tags"></i>
+                                    Tags
+                                </label>
+                                <select name="SelectedTagIds"
+                                        class="form-control tag-selection"
+                                        multiple
+                                        asp-items="@(ViewData["AvailableTags"] as IEnumerable<SelectListItem>)"
+                                        id="tagsSelect">
+                                </select>
+                                <div class="help-text">
+                                    <i class="fas fa-mouse-pointer"></i>
+                                    Hold Ctrl/Cmd to select multiple tags
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button type="submit" class="btn btn-save" id="saveBtn">
+                        <span class="btn-text">
+                            <i class="fas fa-save"></i>
+                            Save Changes
+                        </span>
+                    </button>
+                    <a asp-action="Index" class="btn btn-cancel">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <div class="mb-3">
-        <label asp-for="Description" class="form-label"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('editTaskForm');
+            const submitBtn = document.getElementById('saveBtn');
+            const taskTitle = document.getElementById('taskTitle');
+            const taskDescription = document.getElementById('taskDescription');
+            const titleCounter = document.getElementById('titleCounter');
+            const descCounter = document.getElementById('descCounter');
+            const prioritySelect = document.getElementById('prioritySelect');
+            const statusSelect = document.getElementById('statusSelect');
+            const priorityPreview = document.getElementById('priorityPreview');
+            const statusPreview = document.getElementById('statusPreview');
 
-    <div class="mb-3">
-        <label asp-for="ProjectId" class="form-label"></label>
-        <select asp-for="ProjectId" class="form-select" asp-items="@(ViewData["ProjectId"] as IEnumerable<SelectListItem>)"></select>
-        <span asp-validation-for="ProjectId" class="text-danger"></span>
-    </div>
+            // Character counters
+            function updateCounter(input, counter, maxLength) {
+                const length = input.value.length;
+                counter.textContent = `${length}/${maxLength}`;
 
-    <div class="mb-3">
-        <label asp-for="AssignedUserId" class="form-label"></label>
-        <select asp-for="AssignedUserId" class="form-select" asp-items="@(ViewData["AssignedUserId"] as IEnumerable<SelectListItem>)">
-            <option value="">Unassigned</option>
-        </select>
-        <span asp-validation-for="AssignedUserId" class="text-danger"></span>
-    </div>
+                counter.classList.remove('warning', 'danger');
+                if (length > maxLength * 0.8) {
+                    counter.classList.add('warning');
+                }
+                if (length > maxLength * 0.95) {
+                    counter.classList.add('danger');
+                }
+            }
 
-    <div class="mb-3">
-        <label asp-for="Priority" class="form-label"></label>
-        <select asp-for="Priority" class="form-select" asp-items="@(ViewData["Priorities"] as IEnumerable<SelectListItem>)"></select>
-        <span asp-validation-for="Priority" class="text-danger"></span>
-    </div>
+            taskTitle.addEventListener('input', function() {
+                updateCounter(this, titleCounter, 200);
+                validateField(this);
+            });
 
-    <div class="mb-3">
-        <label asp-for="Status" class="form-label"></label>
-        <select asp-for="Status" class="form-select" asp-items="@(ViewData["Statuses"] as IEnumerable<SelectListItem>)"></select>
-        <span asp-validation-for="Status" class="text-danger"></span>
-    </div>
+            taskDescription.addEventListener('input', function() {
+                updateCounter(this, descCounter, 1000);
+                autoResize(this);
+            });
 
-    <div class="mb-3">
-        <label asp-for="EstimatedHours" class="form-label"></label>
-        <input asp-for="EstimatedHours" class="form-control" />
-        <span asp-validation-for="EstimatedHours" class="text-danger"></span>
-    </div>
+            // Auto-resize textarea
+            function autoResize(textarea) {
+                textarea.style.height = 'auto';
+                textarea.style.height = Math.max(120, textarea.scrollHeight) + 'px';
+            }
 
-    <div class="form-group">
-        <label for="SelectedTagIds">Tags</label>
-        <select name="SelectedTagIds" class="form-control" multiple asp-items="@(ViewData["AvailableTags"] as IEnumerable<SelectListItem>)"></select>
-        <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple tags</small>
-    </div>
+            // Update preview badges
+            function updatePriorityPreview() {
+                const value = prioritySelect.value;
+                const text = prioritySelect.options[prioritySelect.selectedIndex].text;
+                priorityPreview.textContent = text;
+                priorityPreview.className = `priority-preview priority-${value.toLowerCase()}`;
+            }
 
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
+            function updateStatusPreview() {
+                const value = statusSelect.value;
+                const text = statusSelect.options[statusSelect.selectedIndex].text;
+                statusPreview.textContent = text;
+                statusPreview.className = `status-preview status-${value.toLowerCase().replace(' ', '')}`;
+            }
+
+            prioritySelect.addEventListener('change', updatePriorityPreview);
+            statusSelect.addEventListener('change', updateStatusPreview);
+
+            // Real-time validation
+            function validateField(field) {
+                const value = field.value.trim();
+
+                if (field === taskTitle) {
+                    if (value.length === 0) {
+                        setFieldError(field, 'Task title is required');
+                        return false;
+                    } else if (value.length < 3) {
+                        setFieldError(field, 'Task title must be at least 3 characters');
+                        return false;
+                    } else if (value.length > 200) {
+                        setFieldError(field, 'Task title cannot exceed 200 characters');
+                        return false;
+                    } else {
+                        setFieldValid(field);
+                        return true;
+                    }
+                }
+
+                return true;
+            }
+
+            function setFieldError(field, message) {
+                field.classList.remove('is-valid');
+                field.classList.add('is-invalid');
+
+                const errorSpan = field.parentElement.querySelector('.text-danger');
+                if (errorSpan) {
+                    errorSpan.textContent = message;
+                }
+            }
+
+            function setFieldValid(field) {
+                field.classList.remove('is-invalid');
+                field.classList.add('is-valid');
+
+                const errorSpan = field.parentElement.querySelector('.text-danger');
+                if (errorSpan) {
+                    errorSpan.textContent = '';
+                }
+            }
+
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                let isValid = true;
+
+                // Validate required fields
+                if (!validateField(taskTitle)) {
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                    showNotification('Please fix the errors above', 'error');
+                    return;
+                }
+
+                // Show loading state
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+            });
+
+            // Initialize counters and previews
+            updateCounter(taskTitle, titleCounter, 200);
+            updateCounter(taskDescription, descCounter, 1000);
+            updatePriorityPreview();
+            updateStatusPreview();
+            autoResize(taskDescription);
+
+            // Auto-focus first field
+            taskTitle.focus();
+        });
+
+        // Notification system
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} position-fixed top-0 end-0 m-3`;
+            notification.style.zIndex = '10000';
+            notification.style.animation = 'slideIn 0.3s ease';
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                ${message}
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Add slideOut animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @@keyframes slideOut {
+                from {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateX(100%);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
